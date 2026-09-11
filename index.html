@@ -1,0 +1,4659 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>G.U.K.R. - Terminal</title>
+
+<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=MkAVrunkLCe6n2v1DwTmlBZsSfdLsPjpr62Wz46udrYArIrj5AKYhVYlWy6Q_4SUCJEj3nnQdQYg95FkLgQh3MSbDjWXKtxwLwNpS3kisra6CcQZ4z8ZUoaNNQ6sI1QqAfDftbfyJvxPadQxGhRkXsqoaPqajEOl3-LqiIwf8GoFEWkLWzBj8Lgpf45fpWsfo3VgA9ey4zWk_kFvR6gFNQuKvt9dbIV3tMqL1PvAldlL81h4UQ4AVhara3Rg1jKboAOxcNToSxQj3yr0eNqmtYv9B-5NgKUCPY1Y_sfHqCA8Qy0slXgFuMNA-cju0oXlThNpXcPPDQSvUuGvV8bknejF4YsKXFfG7hgUvG_LOJ8" charset="UTF-8"></script><style>
+
+/* =========================================================
+   PODSTAWY
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+
+    background: #050505;
+
+    color: #c0c0c0;
+
+    font-family:
+        "Courier New",
+        Courier,
+        monospace;
+
+    overflow-x: hidden;
+}
+
+button {
+
+    background: #181818;
+
+    color: #bbb;
+
+    border: 1px solid #555;
+
+    padding: 12px 22px;
+
+    font-family:
+        "Courier New",
+        monospace;
+
+    cursor: pointer;
+
+    transition: 0.25s;
+
+}
+
+button:hover {
+
+    background: #720000;
+
+    color: white;
+
+    border-color: red;
+
+}
+
+input {
+
+    background: #090909;
+
+    border: 1px solid #444;
+
+    color: #ddd;
+
+    font-family:
+        "Courier New",
+        monospace;
+
+    padding: 12px;
+
+    outline: none;
+
+}
+
+input:focus {
+
+    border-color: #8b0000;
+
+}
+
+
+/* =========================================================
+   LOGOWANIE
+   ========================================================= */
+
+#login-screen {
+
+    position: relative;
+
+    width: 100%;
+
+    min-height: 100vh;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+    text-align: center;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #130000 0%,
+            #050505 40%,
+            #000 100%
+        );
+
+}
+
+#login-screen h1 {
+
+    font-size: 3em;
+
+    color: #ddd;
+
+    letter-spacing: 8px;
+
+    text-shadow:
+        3px 3px #700000;
+
+    position: relative;
+
+    z-index: 10;
+
+}
+
+#login-screen p {
+
+    position: relative;
+
+    z-index: 10;
+
+    line-height: 1.8;
+
+}
+
+#password-input {
+
+    width: 300px;
+
+    max-width: 80%;
+
+    font-size: 1.4em;
+
+    text-align: center;
+
+    letter-spacing: 5px;
+
+    position: relative;
+
+    z-index: 10;
+
+}
+
+#login-screen button {
+
+    margin-top: 15px;
+
+    position: relative;
+
+    z-index: 10;
+
+}
+
+#error-message {
+
+    min-height: 25px;
+
+    color: red;
+
+    margin-top: 20px;
+
+    position: relative;
+
+    z-index: 10;
+
+}
+
+
+/* =========================================================
+   POSTAĆ NA LOGOWANIU
+   ========================================================= */
+
+#login-character-wrap {
+
+    position: absolute;
+
+    left: 2%;
+
+    bottom: 0;
+
+    height: 95vh;
+
+    width: min(38vw, 500px);
+
+    pointer-events: none;
+
+    z-index: 2;
+
+}
+
+#login-character {
+
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: contain;
+
+    object-position: bottom;
+
+    opacity: 0.08;
+
+    filter:
+        brightness(0.3)
+        contrast(1.4);
+
+    transform:
+        translateX(-25px)
+        rotate(6deg);
+
+    transition:
+        0.55s ease;
+
+    mask-image:
+        radial-gradient(
+            ellipse,
+            black 25%,
+            rgba(0,0,0,.8) 55%,
+            transparent 90%
+        );
+
+}
+
+#login-screen.typing
+#login-character {
+
+    opacity: 0.14;
+
+    transform:
+        translateX(-12px)
+        rotate(4deg);
+
+}
+
+#login-screen.aiming
+#login-character {
+
+    opacity: 0.23;
+
+    transform:
+        translateX(5px)
+        rotate(0deg)
+        scale(1.04);
+
+}
+
+#login-screen.alert
+#login-character {
+
+    opacity: 0.30;
+
+    filter:
+        brightness(.5)
+        contrast(1.6);
+
+}
+
+#login-screen.authorized
+#login-character {
+
+    opacity: 0;
+
+    transform:
+        translateX(30px)
+        scale(1.1);
+
+    filter:
+        blur(6px)
+        brightness(.1);
+
+}
+
+
+/* =========================================================
+   CENTRUM DOSTĘPU
+   ========================================================= */
+
+#access-screen {
+
+    display: none;
+
+    min-height: 100vh;
+
+    padding: 40px;
+
+}
+
+.access-header {
+
+    text-align: center;
+
+    border-bottom:
+        2px solid #333;
+
+    padding-bottom: 25px;
+
+    margin-bottom: 30px;
+
+}
+
+.access-header h1 {
+
+    letter-spacing: 7px;
+
+    color: #ddd;
+
+    text-shadow:
+        2px 2px #700000;
+
+}
+
+.access-warning {
+
+    color: #b22222;
+
+    font-weight: bold;
+
+}
+
+
+/* =========================================================
+   ZAGADKA ALFA
+   ========================================================= */
+
+.alpha-riddle {
+
+    max-width: 800px;
+
+    margin:
+        0 auto 35px;
+
+    padding: 25px;
+
+    background: #0b0b0b;
+
+    border:
+        1px solid #333;
+
+    border-left:
+        5px solid #8b0000;
+
+    line-height: 1.8;
+
+}
+
+.alpha-riddle h3 {
+
+    color: #b22222;
+
+}
+
+
+/* =========================================================
+   KAFELKI
+   ========================================================= */
+
+.access-grid {
+
+    max-width: 1400px;
+
+    margin: auto;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(220px,1fr)
+        );
+
+    gap: 15px;
+
+}
+
+.access-level {
+
+    padding: 20px;
+
+    background: #101010;
+
+    border:
+        1px solid #333;
+
+    cursor: pointer;
+
+    transition: 0.25s;
+
+}
+
+.access-level:hover {
+
+    border-color: #8b0000;
+
+    background: #181818;
+
+    transform:
+        translateY(-4px);
+
+}
+
+.access-level h3 {
+
+    margin-top: 0;
+
+    color: #ddd;
+
+}
+
+.access-level p {
+
+    color: #666;
+
+    font-size: .85em;
+
+}
+
+.access-level.public {
+
+    border-color: #315b36;
+
+}
+
+.access-level.public h3 {
+
+    color: #66bb6a;
+
+}
+
+.access-level.archive {
+
+    border-color: #554d7c;
+
+}
+
+.access-level.archive h3 {
+
+    color: #aaaaff;
+
+}
+
+.access-level.alpha {
+
+    border-color: #8b0000;
+
+}
+
+.access-level.alpha h3 {
+
+    color: #ff5555;
+
+}
+
+
+/* =========================================================
+   MODAL HASŁA POZIOMU
+   ========================================================= */
+
+#level-password-modal {
+
+    display: none;
+
+    position: fixed;
+
+    inset: 0;
+
+    background:
+        rgba(0,0,0,.95);
+
+    z-index: 10000;
+
+    justify-content: center;
+
+    align-items: center;
+
+}
+
+.password-terminal {
+
+    width: 90%;
+
+    max-width: 520px;
+
+    padding: 30px;
+
+    text-align: center;
+
+    background: #080808;
+
+    border:
+        2px solid #800000;
+
+}
+
+.password-terminal input {
+
+    width: 90%;
+
+    margin: 15px 0;
+
+    text-align: center;
+
+    letter-spacing: 4px;
+
+}
+
+#level-error {
+
+    color: red;
+
+    min-height: 25px;
+
+    margin-top: 15px;
+
+}
+
+
+/* =========================================================
+   GŁÓWNA BAZA
+   ========================================================= */
+
+#main-content {
+
+    display: none;
+
+    padding: 40px;
+
+}
+
+.main-header {
+
+    border-bottom:
+        2px solid #333;
+
+    margin-bottom: 25px;
+
+    padding-bottom: 20px;
+
+}
+
+.main-title {
+
+    color: #ddd;
+
+    text-shadow:
+        2px 2px #700000;
+
+}
+
+.warning-banner {
+
+    display: inline-block;
+
+    background: #700000;
+
+    border:
+        1px solid red;
+
+    padding: 8px 15px;
+
+    color: white;
+
+}
+
+
+/* =========================================================
+   ZAKŁADKI
+   ========================================================= */
+
+.tabs {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+    margin-bottom: 30px;
+
+    border-bottom:
+        1px solid #333;
+
+    padding-bottom: 10px;
+
+}
+
+.tab-button {
+
+    font-size: .85em;
+
+}
+
+.tab-button.active {
+
+    background: #222;
+
+    border-color: #8b0000;
+
+    color: white;
+
+}
+
+.tab-content {
+
+    display: none;
+
+}
+
+.tab-content.active {
+
+    display: block;
+
+}
+
+.intro {
+
+    line-height: 1.8;
+
+    color: #999;
+
+}
+
+
+/* =========================================================
+   TECZKI
+   ========================================================= */
+
+.folder {
+
+    margin-bottom: 20px;
+
+    padding: 20px;
+
+    background: #101010;
+
+    border:
+        1px solid #333;
+
+    cursor: pointer;
+
+}
+
+.folder-title {
+
+    margin: 0;
+
+    font-size: 1.15em;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+}
+
+.content {
+
+    display: none;
+
+    margin-top: 20px;
+
+    padding-top: 20px;
+
+    border-top:
+        1px dashed #555;
+
+    line-height: 1.8;
+
+}
+
+.omega-active
+.folder {
+
+    animation:
+        antiGravity
+        6s
+        ease-in-out
+        infinite
+        alternate;
+
+}
+
+.omega-active
+.folder.open {
+
+    animation:
+        none !important;
+
+    transform:
+        translateY(0)
+        rotate(0)
+        !important;
+
+    background: #181818;
+
+    border-left:
+        5px solid #8b0000;
+
+}
+
+@keyframes antiGravity {
+
+    from {
+
+        transform:
+            translateY(0)
+            rotate(0);
+
+    }
+
+    to {
+
+        transform:
+            translateY(-10px)
+            rotate(.5deg);
+
+    }
+
+}
+
+
+/* =========================================================
+   FORMULARZE
+   ========================================================= */
+
+.forms-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(280px,1fr)
+        );
+
+    gap: 20px;
+
+}
+
+.form-card {
+
+    background: #101010;
+
+    border:
+        1px solid #333;
+
+    border-left:
+        4px solid #555;
+
+    padding: 22px;
+
+}
+
+.form-card:hover {
+
+    border-left-color: #8b0000;
+
+}
+
+.form-number {
+
+    color: #8b0000;
+
+    font-weight: bold;
+
+}
+
+
+/* =========================================================
+   ARCHIWUM POSTACI
+   ========================================================= */
+
+.character-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(300px,1fr)
+        );
+
+    gap: 28px;
+
+}
+
+.character-card {
+
+    background:
+        linear-gradient(
+            #101010,
+            #070707
+        );
+
+    border:
+        1px solid #333;
+
+    padding: 15px;
+
+    transition: .3s;
+
+}
+
+.character-card:hover {
+
+    border-color: #700000;
+
+    transform:
+        translateY(-5px);
+
+    box-shadow:
+        0 15px 35px
+        rgba(0,0,0,.8);
+
+}
+
+.character-card.unlocked {
+
+    border-color: #8b0000;
+
+    box-shadow:
+        0 0 25px
+        rgba(139,0,0,.2);
+
+}
+
+.character-image-box {
+
+    position: relative;
+
+    background: #000;
+
+    overflow: hidden;
+
+}
+
+.character-image {
+
+    width: 100%;
+
+    height: 500px;
+
+    object-fit: contain;
+
+    display: block;
+
+    background: #000;
+
+}
+
+.character-number {
+
+    position: absolute;
+
+    bottom: 0;
+
+    left: 0;
+
+    right: 0;
+
+    background:
+        rgba(0,0,0,.88);
+
+    color: #8b0000;
+
+    padding: 8px;
+
+    font-size: .75em;
+
+    letter-spacing: 2px;
+
+}
+
+.character-card h2 {
+
+    text-align: center;
+
+    color: #ddd;
+
+}
+
+.character-auth {
+
+    display: flex;
+
+    gap: 8px;
+
+}
+
+.character-auth input {
+
+    flex: 1;
+
+    min-width: 0;
+
+    text-align: center;
+
+    letter-spacing: 3px;
+
+}
+
+.character-auth button {
+
+    padding:
+        10px 14px;
+
+    font-size: .72em;
+
+}
+
+.character-error {
+
+    min-height: 22px;
+
+    color: red;
+
+    text-align: center;
+
+    margin-top: 10px;
+
+    font-size: .8em;
+
+}
+
+.character-description {
+
+    max-height: 0;
+
+    opacity: 0;
+
+    overflow: hidden;
+
+    padding:
+        0 15px;
+
+    margin-top: 0;
+
+    border-left:
+        3px solid transparent;
+
+    line-height: 1.7;
+
+    transition:
+        max-height .8s,
+        opacity .5s,
+        padding .5s,
+        margin .5s;
+
+}
+
+.character-description.unlocked {
+
+    max-height: 1600px;
+
+    opacity: 1;
+
+    padding: 20px 15px;
+
+    margin-top: 15px;
+
+    border-left-color: #8b0000;
+
+}
+
+.description-header {
+
+    color: #b22222;
+
+    font-weight: bold;
+
+    border-bottom:
+        1px dashed #444;
+
+    padding-bottom: 10px;
+
+}
+
+
+/* =========================================================
+   ZNAKI OMEGA
+   ========================================================= */
+
+.void-letter {
+
+    position: fixed;
+
+    pointer-events: none;
+
+    z-index: 1;
+
+    color:
+        rgba(139,0,0,.35);
+
+    animation:
+        floatVoid
+        linear
+        forwards;
+
+}
+
+@keyframes floatVoid {
+
+    from {
+
+        transform:
+            translateY(110vh);
+
+        opacity: 0;
+
+    }
+
+    15% {
+
+        opacity: 1;
+
+    }
+
+    to {
+
+        transform:
+            translateY(-15vh)
+            rotate(360deg);
+
+        opacity: 0;
+
+    }
+
+}
+
+
+/* =========================================================
+   TELEFON
+   ========================================================= */
+
+@media(max-width:700px) {
+
+    #access-screen,
+    #main-content {
+
+        padding: 18px;
+
+    }
+
+    #login-character-wrap {
+
+        width: 300px;
+
+        left: -90px;
+
+        opacity: .55;
+
+    }
+
+    .character-image {
+
+        height: auto;
+
+        max-height: 75vh;
+
+    }
+
+    .character-auth {
+
+        flex-direction: column;
+
+    }
+
+}
+
+
+/* =========================================================
+   PEŁNY TEKST ROZDZIAŁU
+   ========================================================= */
+
+.chapter-title-full {
+    max-width: 1100px;
+    margin: 0 auto 35px;
+    padding-bottom: 18px;
+    border-bottom: 1px dashed #555;
+    color: #e6e6e6;
+    text-align: center;
+    font-size: 1.45em;
+    font-weight: bold;
+    line-height: 1.5;
+    letter-spacing: 1px;
+}
+
+.full-chapter-text {
+    max-width: 1100px;
+    margin: 0 auto;
+    color: #c8c8c8;
+}
+
+.chapter-paragraph {
+    margin: 0 0 1.35em;
+    line-height: 1.85;
+    text-align: justify;
+    font-size: 1.03em;
+}
+
+.chapter-paragraph em {
+    color: #e3e3e3;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     LOGOWANIE
+     ========================================================= -->
+
+<div id="login-screen">
+
+
+    <div id="login-character-wrap">
+
+        <img
+            id="login-character"
+            src="gukr-obserwator.jpeg"
+            alt=""
+        >
+
+    </div>
+
+
+    <h1>
+        G.U.K.R.
+    </h1>
+
+
+    <p>
+
+        GŁÓWNY URZĄD KONTROLI RZECZYWISTOŚCI
+
+        <br>
+
+        &gt; WYMAGANA AUTORYZACJA &lt;
+
+    </p>
+
+
+    <input
+        id="password-input"
+        type="password"
+        placeholder="WPROWADŹ KOD"
+        autocomplete="off"
+    >
+
+
+    <button onclick="checkPassword()">
+
+        WERYFIKUJ
+
+    </button>
+
+
+    <div id="error-message"></div>
+
+
+</div>
+
+
+
+<!-- =========================================================
+     CENTRUM DOSTĘPU
+     ========================================================= -->
+
+<div id="access-screen">
+
+
+    <div class="access-header">
+
+        <h1>
+            G.U.K.R.
+        </h1>
+
+        <p>
+            CENTRALNY SYSTEM KLASYFIKACJI DOSTĘPU
+        </p>
+
+        <div class="access-warning">
+
+            &gt;
+            WYBIERZ SEKCJĘ
+            LUB POZIOM AUTORYZACJI
+            &lt;
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ZAGADKA ALFA -->
+
+    <div class="alpha-riddle">
+
+        <h3>
+
+            [
+            PRZECHWYCONA WIADOMOŚĆ /
+            KLUCZ ALFA
+            ]
+
+        </h3>
+
+
+        <p>
+
+            System odzyskał fragment
+            uszkodzonego kodu autoryzacyjnego.
+
+        </p>
+
+
+        <p>
+
+            „Pierwszy stoi
+            na czterech bokach.
+
+            <br><br>
+
+            Drugi zawsze znajduje się
+            na jednej ludzkiej dłoni.
+
+            <br><br>
+
+            Trzeci wyznacza
+            pełny cykl tygodnia.
+
+            <br><br>
+
+            Połącz liczby.
+
+            <br>
+
+            Kolejność ma znaczenie.”
+
+        </p>
+
+
+        <strong>
+
+            &gt;
+            POPRAWNA ODPOWIEDŹ
+            OTWORZY POZIOM ALFA.
+
+        </strong>
+
+    </div>
+
+
+
+    <div class="access-grid">
+
+
+        <!-- RAPORTY -->
+
+        <div
+            class="access-level public"
+            onclick="openReports()"
+        >
+
+            <h3>
+                [ PUBLIC ] RAPORTY
+            </h3>
+
+            <p>
+                BRAK DODATKOWEGO HASŁA
+            </p>
+
+        </div>
+
+
+
+        <!-- ARCHIWUM -->
+
+        <div
+            class="access-level archive"
+            onclick="openCharacterArchive()"
+        >
+
+            <h3>
+                [ ARCHIWUM POSTACI ]
+            </h3>
+
+            <p>
+                WIZERUNKI /
+                KARTOTEKI /
+                DANE ZASTRZEŻONE
+            </p>
+
+        </div>
+
+
+
+        <!-- ALFA -->
+
+        <div
+            class="access-level alpha"
+            onclick="requestLevelAccess('ALFA')"
+        >
+
+            <h3>
+                Α α — ALFA
+            </h3>
+
+            <p>
+                PEŁNE AKTA:
+                GRAVEMONT HOTTEL
+            </p>
+
+        </div>
+
+
+        <div class="access-level" onclick="requestLevelAccess('BETA')">
+            <h3>Β β — BETA</h3>
+            <p>DOSTĘP CHRONIONY</p>
+        </div>
+
+        <div class="access-level" onclick="requestLevelAccess('GAMMA')">
+            <h3>Γ γ — GAMMA</h3>
+            <p>DOSTĘP CHRONIONY</p>
+        </div>
+
+        <div class="access-level" onclick="requestLevelAccess('DELTA')">
+            <h3>Δ δ — DELTA</h3>
+            <p>DOSTĘP CHRONIONY</p>
+        </div>
+
+        <div class="access-level" onclick="requestLevelAccess('EPSILON')">
+            <h3>Ε ε — EPSILON</h3>
+            <p>DOSTĘP CHRONIONY</p>
+        </div>
+
+        <div class="access-level" onclick="requestLevelAccess('DZETA')">
+            <h3>Ζ ζ — DZETA</h3>
+            <p>DOSTĘP CHRONIONY</p>
+        </div>
+
+        <div class="access-level" onclick="requestLevelAccess('ETA')">
+            <h3>Η η — ETA</h3>
+            <p>DOSTĘP CHRONIONY</p>
+        </div>
+
+        <div class="access-level" onclick="requestLevelAccess('THETA')">
+            <h3>Θ θ — THETA</h3>
+            <p>DOSTĘP CHRONIONY</p>
+        </div>
+
+        <div class="access-level" onclick="requestLevelAccess('IOTA')">
+            <h3>Ι ι — IOTA</h3>
+            <p>DOSTĘP CHRONIONY</p>
+        </div>
+
+        <div class="access-level" onclick="requestLevelAccess('KAPPA')">
+            <h3>Κ κ — KAPPA</h3>
+            <p>DOSTĘP CHRONIONY</p>
+        </div>
+
+        <div class="access-level" onclick="requestLevelAccess('LAMBDA')">
+            <h3>Λ λ — LAMBDA</h3>
+            <p>DOSTĘP CHRONIONY</p>
+        </div>
+
+        <div class="access-level" onclick="requestLevelAccess('MY')">
+            <h3>Μ μ — MY</h3>
+            <p>DOSTĘP CHRONIONY</p>
+        </div>
+
+        <div class="access-level" onclick="requestLevelAccess('NY')">
+            <h3>Ν ν — NY</h3>
+            <p>DOSTĘP CHRONIONY</p>
+        </div>
+
+        <div class="access-level" onclick="requestLevelAccess('KSI')">
+            <h3>Ξ ξ — KSI</h3>
+            <p>DOSTĘP CHRONIONY</p>
+        </div>
+
+        <div class="access-level" onclick="requestLevelAccess('OMIKRON')">
+            <h3>Ο ο — OMIKRON</h3>
+            <p>DOSTĘP CHRONIONY</p>
+        </div>
+
+        <div class="access-level" onclick="requestLevelAccess('PI')">
+            <h3>Π π — PI</h3>
+            <p>DOSTĘP CHRONIONY</p>
+        </div>
+
+        <div class="access-level" onclick="requestLevelAccess('RHO')">
+            <h3>Ρ ρ — RHO</h3>
+            <p>DOSTĘP CHRONIONY</p>
+        </div>
+
+        <div class="access-level" onclick="requestLevelAccess('SIGMA')">
+            <h3>Σ σ / ς — SIGMA</h3>
+            <p>DOSTĘP CHRONIONY</p>
+        </div>
+
+        <div class="access-level" onclick="requestLevelAccess('TAU')">
+            <h3>Τ τ — TAU</h3>
+            <p>DOSTĘP CHRONIONY</p>
+        </div>
+
+        <div class="access-level" onclick="requestLevelAccess('YPSILON')">
+            <h3>Υ υ — YPSILON</h3>
+            <p>DOSTĘP CHRONIONY</p>
+        </div>
+
+        <div class="access-level" onclick="requestLevelAccess('FI')">
+            <h3>Φ φ — FI</h3>
+            <p>DOSTĘP CHRONIONY</p>
+        </div>
+
+        <div class="access-level" onclick="requestLevelAccess('CHI')">
+            <h3>Χ χ — CHI</h3>
+            <p>DOSTĘP CHRONIONY</p>
+        </div>
+
+        <div class="access-level" onclick="requestLevelAccess('PSI')">
+            <h3>Ψ ψ — PSI</h3>
+            <p>DOSTĘP CHRONIONY</p>
+        </div>
+
+        <div class="access-level" onclick="requestLevelAccess('OMEGA')">
+            <h3>Ω ω — OMEGA</h3>
+            <p>NAJWYŻSZA KLAUZULA</p>
+        </div>
+
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     MODAL POZIOMU
+     ========================================================= -->
+
+<div id="level-password-modal">
+
+    <div class="password-terminal">
+
+        <h2 id="level-password-title">
+            AUTORYZACJA
+        </h2>
+
+        <p>
+            &gt; WPROWADŹ KOD DOSTĘPU
+        </p>
+
+        <input
+            id="level-password-input"
+            type="password"
+            autocomplete="off"
+        >
+
+        <br>
+
+        <button onclick="verifyLevelPassword()">
+            AUTORYZUJ
+        </button>
+
+        <button onclick="closeLevelPassword()">
+            ANULUJ
+        </button>
+
+        <div id="level-error"></div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     GŁÓWNA BAZA
+     ========================================================= -->
+
+<div id="main-content">
+
+
+    <div class="main-header">
+
+        <h2 class="main-title">
+            BAZA DANYCH G.U.K.R.
+        </h2>
+
+        <div class="warning-banner">
+            AUTORYZACJA PRZYJĘTA
+            |
+            WYKRYTO ANOMALIE
+        </div>
+
+        <br><br>
+
+        <button onclick="returnToAccessLevels()">
+
+            [
+            POWRÓT DO CENTRUM DOSTĘPU
+            ]
+
+        </button>
+
+    </div>
+
+
+
+    <!-- ZAKŁADKI -->
+
+    <div class="tabs">
+
+        <button
+            class="tab-button active"
+            data-tab="raporty"
+            onclick="switchTab('raporty')"
+        >
+            [ RAPORTY ]
+        </button>
+
+
+        <button
+            class="tab-button"
+            data-tab="rozdzialy"
+            onclick="switchTab('rozdzialy')"
+        >
+            [ PEŁNE AKTA ]
+        </button>
+
+
+        <button
+            class="tab-button"
+            data-tab="formularze"
+            onclick="switchTab('formularze')"
+        >
+            [ FORMULARZE ]
+        </button>
+
+
+        <button
+            class="tab-button"
+            data-tab="postacie"
+            onclick="switchTab('postacie')"
+        >
+            [ ARCHIWUM POSTACI ]
+        </button>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         RAPORTY
+         ===================================================== -->
+
+    <main
+        id="raporty"
+        class="tab-content active"
+    >
+
+        <p class="intro">
+
+            &gt;
+            RAPORTY Z INCYDENTÓW.
+
+            <br>
+
+            &gt;
+            KLIKNIJ TECZKĘ,
+            ABY ODCZYTAĆ DOKUMENT.
+
+        </p>
+
+
+        <div
+            class="folder"
+            onclick="toggleFolder(event,'raport1')"
+        >
+
+            <h2 class="folder-title">
+
+                <span>
+                    [+] RAPORT GH-04
+                </span>
+
+                <span>
+                    [ŚCIŚLE TAJNE]
+                </span>
+
+            </h2>
+
+
+            <div
+                id="raport1"
+                class="content"
+            >
+
+                <strong>
+                    INCYDENT W RECEPCJI
+                </strong>
+
+                <p>
+                    — Gdzie podział się pokój 404?
+                </p>
+
+                <p>
+                    — Nie zniknął.
+                    Przeniósł się do zeszłego czwartku.
+                </p>
+
+                <p>
+                    — Znowu?
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="folder"
+            onclick="toggleFolder(event,'raport2')"
+        >
+
+            <h2 class="folder-title">
+
+                <span>
+                    [+] RAPORT BIZARRO-9
+                </span>
+
+                <span>
+                    [OCENZUROWANO]
+                </span>
+
+            </h2>
+
+
+            <div
+                id="raport2"
+                class="content"
+            >
+
+                <p>
+                    — Proszę podać nazwisko.
+                </p>
+
+                <p>
+                    — Nie mam nazwiska.
+                    Jestem czystym prawdopodobieństwem.
+                </p>
+
+                <p>
+                    — Rozumiem.
+                    Wpisuję: bezrobotny.
+                </p>
+
+            </div>
+
+        </div>
+
+
+    </main>
+
+
+
+    <!-- =====================================================
+         PEŁNE AKTA
+         ===================================================== -->
+
+    <main
+        id="rozdzialy"
+        class="tab-content"
+    >
+
+        <p class="intro">
+
+            &gt;
+            POZIOM:
+            Α / ALFA
+
+            <br>
+
+            &gt;
+            PEŁNE AKTA
+            GRAVEMONT HOTTEL.
+
+        </p>
+
+
+        <div
+            class="folder"
+            onclick="toggleFolder(event,'chapter1')"
+        >
+
+            <h2 class="folder-title">
+
+                <span>
+                    [+] ROZDZIAŁ XIII
+                </span>
+
+                <span>
+                    [ALFA]
+                </span>
+
+            </h2>
+
+
+            <div
+                id="chapter1"
+                class="content"
+            >
+
+                
+                <div class="chapter-title-full">
+                    ROZDZIAŁ XIII: BLITZKRIEG W STREFIE WELLNESS, GENERAŁ VON WRZASK I BUNT MARTWEGO PROLETARIATU
+                </div>
+
+                <div class="full-chapter-text">
+                    <p class="chapter-paragraph">
+                        W Gravemont Hottel środa była dniem powszechnie nielubianym, a wręcz znienawidzonym przez cały personel techniczny. Był to dzień, w którym wielka, światowa historia lubiła się nie tyle subtelnie powtarzać, co po prostu odbijać potężną, wyjątkowo nieprzyjemną i głośną czkawką.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Zjawisko to wcale nie było wynikiem klątwy czy układów planetarnych, ale miało swoje źródło w bardzo prozaicznych, budżetowych decyzjach dyrekcji. Wynikało z faktu, że właśnie w środy rano zmęczone życiem sprzątaczki używały do polerowania marmurów najtańszej, przemysłowej pasty do podłóg marki „Echa Przeszłości”. Środek ten, wzbogacony chemicznym woskiem pszczelim z wczesnego plejstocenu oraz wyciągiem z historycznego żalu, był niezwykle skuteczny na plamy z ektoplazmy, ale posiadał jedną, drobną wadę ukrytą. Jego opary drastycznie i bezpowrotnie rozszczelniały i tak już cienkie jak mokry papier bariery międzyepokowe w budynku. W efekcie, środowe mycie korytarzy zbyt często kończyło się inwazją wikingów szukających lodu do drinków przy maszynie z napojami, albo husarią w pełnym rynsztunku galopującą przez główne lobby w stronę bufetu.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Tego konkretnego, pochmurnego popołudnia Michał stał na rozklekotanej, aluminiowej drabinie i zrezygnowany wymieniał przepaloną żarówkę. Znajdował się w długim, słabo oświetlonym korytarzu prowadzącym bezpośrednio do hotelowej Strefy SPA — miejsca, gdzie luksusowe wanny z hydromasażem często próbowały utopić gości w odmętach ich własnych, niezrealizowanych marzeń z dzieciństwa. Nowa żarówka, jak praktycznie każdy przedmiot martwy w tym przeklętym budynku, natychmiast zaczęła stawiać czynny, ideologiczny opór.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Nie chcę tu świecić! — zakomunikowała mu, histerycznie mrugając bladym światłem w rytmie alfabetu Morse’a. — Mam zdiagnozowaną depresję, poczucie bezsensu i potworny lęk wysokości. Chcę zostać mroczną, artystyczną ciemnią fotograficzną. Zostaw mnie w spokoju!
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Świeć, płać podatki i nie gadaj tyle — mruknął Michał, bezlitośnie i mocno dokręcając szklany gwint. — Mam dzisiaj przed sobą jeszcze pięć wielkich pięter do obskoczenia z drabiną, a dyrekcja i tak ucięła nam w tym miesiącu dodatek za empatię wobec sprzętu oświetleniowego.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        I dokładnie w tym momencie, gdy żarówka wydała z siebie ostatni, cichy jęk poddania, rozległ się dźwięk.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Nie był to zwykły, typowy dla Gravemont odgłos pękającej ze starości rury kanalizacyjnej, ani nawet stłumiony wybuch kwantowy dochodzący z reaktora doktora Vossa w piwnicach. To był ostry, metaliczny dźwięk ciężkich, podkutych stalą wojskowych butów, które z nieludzką precyzją uderzały o wypolerowany, marmurowy parkiet. Był to krok rytmiczny, do bólu agresywny i absolutnie nieznoszący jakiegokolwiek sprzeciwu.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        <em>STUK. STUK. STUK.</em>
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Zabytkowa winda osobowa na końcu korytarza, która zazwyczaj zacinała się między piętrami i puszczała irytujące, jazzowe musaki, tym razem otworzyła swoje zardzewiałe drzwi z tak potężnym, mechanicznym trzaskiem, jakby z przerażenia salutowała wyższemu rangą oficerowi. Z zadymionego wnętrza kabiny, w gęstych oparach siarki i zwietrzałej wody kolońskiej, powoli i majestatycznie wyłoniła się wysoka, sztywna postać.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Michał od razu zjeżył się na karku. Wiedział doskonale, że to na pewno nie był Hans. Hans był ich sympatycznym, zagubionym w czasie Żołnierzem z Pustki z poziomu minus dwa, z którym recepcjonista często, w tajemnicy przed wszystkimi, palił papierosy przy śmietniku i wymieniał się poglądami na temat gotowania kiszonej kapusty. Upiór, który właśnie zstąpił z windy i kroczył korytarzem, znajdował się o wiele, wiele wyżej w mrocznej, bezlitosnej hierarchii zaświatów.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Mężczyzna miał na sobie nienagannie wyprasowany, czarny mundur generalski, który dosłownie uginał się pod ciężarem dziesiątek błyszczących odznaczeń, orderów i wstążek przyznanych za zbrodnie przeciwko ludzkości oraz dobremu smakowi. W jego prawy oczodół brutalnie, niemal na siłę wciśnięty był zimny, lśniący monokl — i to tak głęboko, że z medycznego punktu widzenia groził mu natychmiastową lobotomią. Jego twarz wykrzywiał morderczy, skwaszony grymas, charakterystyczny dla kogoś, kto z samego rana zamiast śniadania zjadł całą cytrynę, hojnie posypaną potłuczonym szkłem i zapił to octem.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Był to Generał Von Wrzask. Jego prawdziwe, historyczne nazwisko dawno zaginęło gdzieś w mrokach wojennych dziejów i płonących archiwach, ale ocalały personel hotelowy bardzo szybko, trafnie i z niekłamanym przerażeniem nadał mu nowe.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Generał zatrzymał się, stając w szerokim, militarnym rozkroku. Omiótł opustoszały korytarz Strefy SPA wzrokiem pełnym absolutnej, lodowatej pogardy, a jego nozdrza rozdęły się z obrzydzeniem, gdy poczuł relaksujący zapach lawendowych olejków do masażu i soli do kąpieli. Wciągnął w swoje zbutwiałe, ektoplazmatyczne płuca potężny haust powietrza.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Wo ist der Führer?! — ryknął z tak nieludzką, wibrującą w ścianach i zaginającą przestrzeń siłą, że świeżo wkręcona, narzekająca na depresję żarówka Michała z czystego, fizycznego strachu natychmiast eksplodowała, obsypując całą drabinę deszczem drobnego szkła.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Michał błyskawicznie zsunął się ze skrzypiącej drabiny, ignorując sypiące się na głowę odłamki szkła, i pędem ruszył w stronę głównego lobby, by ostrzec resztę załogi przed nadciągającym frontem.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Mamy na dole kod „Brunatny”! — krzyknął na całe gardło, dysząc ciężko i opierając się o kontuar. — Jakiś wysoko postawiony, wściekły oficer z wczesnych lat czterdziestych właśnie wchodzi do naszej strefy!
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Grażyna westchnęła tak ciężko, jakby cały ciężar drugiej wojny światowej spoczął nagle na jej barkach. Powoli i z wyraźnym żalem odłożyła na serwetkę swoją napoczętą kanapkę.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Znowu? — zapytała beznamiętnym, znudzonym tonem. — Przecież dopiero w zeszłym miesiącu mieliśmy tu tego całego Napoleona. Strasznie nam wtedy marudził nad uchem, że woda w kranie za zimna, a hotelowa wanna jest stanowczo za krótka na jego cesarski majestat.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Ten wygląda zdecydowanie groźniej! — zaoponował Michał. — Ma wściekły monokl i skórzaną szpicrutę!
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Zanim recepcjonistka zdążyła odpowiedzieć, Generał Von Wrzask z impetem wkroczył do lobby. Za jego czarnym, lśniącym płaszczem ciągnęła się gęsta smuga gryzącego dymu i intensywny, ostry zapach prochu strzelniczego wymieszanego ze stęchlizną starych, sztabowych map. Wojskowym krokiem stanął tuż przed ladą recepcyjną, z potężnym trzaskiem uderzył szpicrutą w wypolerowany blat i wrzasnął z głębi nazistowskich płuc:
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Achtung! To terytorium zostaje z dniem dzisiejszym i niniejszym aktem anektowane na wyłączne potrzeby Tysiącletniej Rzeszy!
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Kierownik zmiany, który do tej pory bezpiecznie ukrywał się w swoim przeszklonym biurze zwanym przez personel Akwarium, powoli i z godnością uchylił drzwi.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Przepraszam szanownego pana najmocniej — zaczął niezwykle uprzejmym, wyuczonym na szkoleniach korporacyjnym tonem, poprawiając krawat. — Zgodnie z naszym regulaminem, doba hotelowa zaczyna się dopiero od godziny czternastej. Czy posiada pan może aktywną rezerwację? Booking? Trivago? A może chociaż oficjalny telegram potwierdzający z Berlina?
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Twarz generała w ułamku sekundy przybrała odcień dojrzałego buraka.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Ja nigdy niczego nie rezerwuję! Ja podbijam! — zaryczał, plując zjawiskową śliną na wszystkie strony. — Żądam natychmiastowego przekazania kluczy do kwatery głównej! Oraz najnowszej mapy rozmieszczenia wojsk nieprzyjaciela w tym sektorze!
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Mapy turystyczne i plany miasta są dostępne w kiosku obok, po pięć złotych za sztukę — odparła ze stoickim spokojem Grażyna, nawet na moment nie podnosząc wzroku znad swojej nierozwiązanej krzyżówki. — A klucze do pokoi mamy tylko zbliżeniowe, magnetyczne. Pan w ogóle umie obsługiwać nowoczesny plastik, czy w pana czasach wciąż jeszcze używacie takich wielkich, żelaznych wytrychów?
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Generał Von Wrzask zamarł w bezruchu. Jego mroczny, zaprogramowany wyłącznie na wojnę totalną i błyskawiczne inwazje mózg po prostu nie potrafił przetworzyć i zinterpretować tak abstrakcyjnego poziomu czystej, polskiej biurokratycznej obojętności, z jaką właśnie się zderzył. Kółka zębate w jego czaszce zazgrzytały z przeciążenia.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — To jest jawny sabotaż! — krzyknął wreszcie wyższym, lekko histerycznym głosem, wywijając szpicrutą. — Wszystkich was tu postawić pod mur i rozstrzelać! Hans! Gdzie jest do ciężkiej cholery mój adiutant?!
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Z czeluści ewakuacyjnej klatki schodowej, prowadzącej prosto do zatęchłych podziemi, dało się słyszeć powolne, niemrawe szuranie. Nie był to jednak odgłos nadciągającego zagrożenia. Brzmiało to raczej tak, jakby ktoś ciągnął za sobą kowadło bezsensu własnej egzystencji.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Po chwili z półmroku wyłonił się Hans.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Historyczny Żołnierz z Pustki, postrach piwnic i zmora audytorów, wyglądał dzisiaj na wybitnie zmieszanego, a jego mroczna aura przypominała bardziej poniedziałkowe zniechęcenie korporacyjnego stażysty. Wciąż miał na sobie swój stary, poplamiony ektoplazmą wehrmachtowski mundur, ale na wierzch, całkowicie niszcząc swoją grozę, narzucił spraną, szarą bluzę z kapturem i wielkim napisem „Gravemont Staff”. Dostał ją kiedyś od Mietka w ramach premii za nadgodziny przy straszeniu opornych gości. Żeby tego było mało, w dłoni obleczonej w skórzaną rękawicę taktyczną trzymał neonowego e-papierosa o smaku syntetycznej truskawki — dokładnie tę samą nieszczęsną maszynkę, która po incydencie z Sebią na zawsze zmieniła zapach hotelowego reaktora.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Generał Von Wrzask na widok swojego podwładnego zamarł. Jego prawe oko, w które wciśnięty był monokl, zaczęło niebezpiecznie pulsować. Płuca dowódcy nabrały powietrza z takim świstem, że mało nie wessały pobliskich ulotek reklamowych z lady.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Soldat! — zaryczał Generał, a siła jego głosu wprawiła w drżenie kryształowe popielniczki na kontuarze. — Co to ma być za błazeński mundur?! Dlaczego stoisz przed wyższym oficerem w takim stroju?! Wyglądasz jak... jak jakiś spacyfikowany hipis z dekadenckiej, upadłej republiki! I na wszystkie fronty świata, co to za wściekle różowy dym, który wydmuchujesz z tej świecącej rurki?! Czy to jakaś nasza nowa, tajna broń chemiczna z berlińskich laboratoriów?!
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Hans powoli, z wyraźnym oporem w stawach podniósł dłoń i zasalutował tak niedbale, że mogłoby to uchodzić za próbę odgonienia natrętnej muchy.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Herr General... — wymamrotał cicho spod ciężkiej maski gazowej, wypuszczając z sykiem gęstą, lepką chmurę o zapachu owoców leśnych, która natychmiast osiadła na pagonach dowódcy. — Zgłaszam posłusznie, że to nie jest żaden hipisowski strój. To jest... innowacyjny kamuflaż. Taktyczny kamuflaż dostosowawczy. Założyłem go, żeby bezszelestnie wtopić się w tutejszą, trudną lokalną ludność roku dwa tysiące dwudziestego szóstego. Wymogi operacyjne, panie generale.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Von Wrzask zacisnął dłonie w pięści tak mocno, że zatrzeszczała skóra jego rękawiczek. Zrobił krok w stronę żołnierza, górując nad nim swoim militarystycznym oburzeniem.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Wtopić się?! Czyś ty do reszty stracił zmysły wojskowe, człowieku?! — wrzasnął, pryskając śliną, która w połowie lotu zamieniała się w rdzę. — Masz ich natychmiast podbić i zniewolić, a nie się z nimi asymilować! Jesteśmy armią uderzeniową, a nie kółkiem wsparcia psychologicznego! Baczność, żołnierzu! Wydać natychmiastowy rozkaz ataku na sektor gastronomiczny! Musimy za wszelką cenę zabezpieczyć hotelową kuchnię i strategiczne zasoby kiełbasy pętowej, zanim wróg przetnie nam linie zaopatrzeniowe!
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Hans powoli opuścił rękę. Zamiast rzucić się do wykonywania samobójczego rozkazu, przeniósł tylko swój pusty, zmęczony wzrok na stojącego w rogu Michała. W jego błękitnych, martwych oczach, widocznych przez szkła maski, malowało się jedno, nieme błaganie, doskonale zrozumiałe dla każdego pracownika usług: <em>„Błagam, zabierzcie stąd tego starego boomer'a, zanim zrobi nam tu znowu jakiś międzynarodowy dym”</em>.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Zanim Michał zdążył wymyślić jakikolwiek dyplomatyczny wybieg, z zaplecza technicznego wyłonił się Mietek. Jak na doświadczonego negocjatora przystało, trzymał w dłoni ociekającego szarą wodą mopa, traktując go niczym włócznię rozejmową.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Panie Generale, z całym szacunkiem do pańskich wybitnych odznaczeń i szarży — wtrącił się stanowczo konserwator, stając dokładnie pomiędzy rozwścieczonym oficerem a zrezygnowanym żołnierzem. — Kuchnia jest na ten moment twardym terenem neutralnym. Chroni ją Konwencja Genewska, rozporządzenia BHP oraz, co najważniejsze, Państwowy Inspektorat Sanitarny.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Generał prychnął pogardliwie, uderzając szpicrutą o cholewę buta.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Żadne papierowe traktaty nie powstrzymają potęgi mojego natarcia! Przejdziemy przez ich obronę jak przez masło! Kto niby miałby nas zatrzymać?!
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Kucharka Krystyna — odparł Mietek z grobową, absolutną powagą, opierając się o kij mopa. — Kobieta jest całkowicie głucha od tysiąc dziewięćset osiemdziesiątego roku, więc pańskie krzyki i psychologiczne metody walki nie zrobią na niej żadnego wrażenia. A do tego dysponuje dwukilogramowym tasakiem rzeźnickim z hartowanej stali i wierz mi pan, ona absolutnie nie zawaha się go użyć, jeśli ktoś wdepnie z brudnym butem na jej świeżo zmyte linoleum. To by była rzeź, Generale. Totalna rzeź pańskich sił. Jako główny strateg, sugeruję natychmiastowy taktyczny odwrót na z góry upatrzone, bezpieczniejsze pozycje. Na przykład do baru na parterze.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Von Wrzask zamarł. Zmysł taktyczny na moment wziął górę nad żądzą krwi. Delikatnie i w zadumie zmrużył oko z wciśniętym w oczodół monoklem. Słowo „odwrót” zawsze wywoływało u niego zgagę, ale z drugiej strony, wizja starcia z głuchą potwornością uzbrojoną w tasak wydawała się niekalkulowanym ryzykiem operacyjnym.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Do baru, powiadasz? — mruknął powoli Generał, wygładzając poły swojego czarnego płaszcza. — Zmiana frontu... Brzmi to jak rozsądny, oskrzydlający manewr dywersyjny. A powiedz mi, stary cywilu, czy serwują w tym waszym przyczółku porządnego, niemieckiego Schnapsa?
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Mietek uśmiechnął się pod wąsem, wyczuwając, że kryzys został zażegnany.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Mają tam coś o wiele lepszego, panie oficerze. Serwujemy słynnego „Drinka Schrödingera”. Zamawia pan szkło, a to, co znajdzie pan w środku, może być zarówno najlepszym, przedwojennym Schnapsem, jak i przepalonym płynem do chłodnic z Ursusa. Wszystko zależy od pańskiej siły woli, determinacji i kwantowego szczęścia pijącego.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Generał złożył dłonie za plecami i zamyślił się głęboko, trawiąc te logistyczne informacje. Ryzyko, procenty i walka woli — to przemawiało do jego wojskowej duszy.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Bardzo dobrze. Zmiana rozkazów! — szczeknął nagle, odwracając się na pięcie, aż zaszeleścił płaszcz. — Dokonamy w takim razie pełnego rekonesansu i inspekcji zapasów w sektorze barowym! Ale zaraz potem... zaraz potem zbierzemy siły, uderzymy z flanki i bezlitośnie podbijemy strefę basenu! Prowadź, Hans!
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Żołnierz z Pustki zaciągnął się jeszcze raz głęboko syntetyczną truskawką, westchnął ciężko i powłócząc nogami, ruszył w stronę strefy rozrywkowej, pozostawiając w korytarzu obłok różowego, dusznego dymu. Praca w Gravemont była po prostu wyczerpująca. W każdym wymiarze i w każdej epoce.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Generał, po błyskawicznym i wysoce zdyscyplinowanym wypiciu trzech serwowanych z rzędu „Drinków Schrödingera” — które po załamaniu funkcji falowej okazały się być stuprocentową, wysokooktanową benzyną lotniczą, co nawiasem mówiąc, wybornie mu posmakowało i odświeżyło cerę — postanowił niezwłocznie przejść do czynów. Otarł usta wierzchem czarnej, skórzanej rękawiczki, a jego monokl błysnął złowrogo w mrocznym świetle barowych jarzeniówek. Nadszedł czas na ostateczną realizację jego wielkiego, militarnego planu strategicznego, noszącego w dokumentach kryptonim: Operacja „Mokry Wilk”.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Głównym, bezwzględnym celem tego bezlitosnego blitzkriegu było zajęcie, spacyfikowanie i zbrojne utrzymanie hotelowej Strefy Wellness, zlokalizowanej na poziomie minus jeden.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Michał, zrezygnowany Hans uparcie pykający truskawkowego e-papierosa oraz Mietek, podążyli za dowódcą w bezpiecznym szyku z tyłu. Ich misja była prosta: zminimalizować ewentualne straty w ludziach, mieniu oraz w sprzęcie basenowym, który i tak nie był przez dyrekcję ubezpieczony od bezpośrednich działań wojennych.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Słuchajcie... on przecież chyba w ogóle nie wie, że u nas w głównym basenie od wielkiej powodzi mieszkają te wredne, zmutowane Topielce z tysiąc dziewięćset dziewięćdziesiątego siódmego roku, prawda? — zapytał Michał scenicznym szeptem, zerkając nerwowo na sprężysty, dziarski krok Generała, niosący się echem po klatce schodowej.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Oczywiście, że nie wie — odparł cicho Mietek, uśmiechając się pod wąsem z nieskrywaną, sadystyczną satysfakcją godną prawdziwego weterana robót fizycznych. — I niech się broń Boże nie dowie przedwcześnie. Niech ten stary dziad ma chociaż jedną, małą niespodziankę z życia. To będzie jego osobisty, wodny Stalingrad.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Generał Von Wrzask z impetem wparował przez oszklone drzwi wahadłowe prosto na halę basenową.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Było to miejsce wysoce specyficzne, potwornie wilgotne, duszne i pachnące potężną dawką technicznego chloru zmieszanego z czystą, ludzką beznadzieją. Kaflowe ściany były gęsto porośnięte czarnym, złośliwym grzybem, który pod wpływem inteligentnych, lokalnych anomalii układał się w bardzo czytelne, depresyjne cytaty z dzieł Fryderyka Nietzschego. Sama woda w olbrzymiej niecce basenu absolutnie nie zachęcała do radosnej rekreacji — była czarna, gęsta i w dotyku przypominała zimny kisiel, z którego od czasu do czasu z sykiem wynurzały się pękające bąbelki o zapachu rzecznego mułu.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Wunderbar! Po prostu wunderbar! — zakrzyknął w ekstazie Generał, uderzając szpicrutą o otwartą dłoń. — To będzie nasz nowy, doskonały, naturalny port dla U-Bootów! Przejmujemy ten obiekt dla chwały dowództwa!
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Nie czekając na jakiekolwiek posiłki, oficer natychmiast, z mechaniczną, wojskową precyzją, zaczął z brzękiem rozstawiać niewinne, białe, plastikowe leżaki basenowe w ścisłej, podręcznikowej formacji bojowej, tworząc z nich barykady osłaniające przed ewentualnym ostrzałem wroga.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Ty tam, polski cywilu z mopem! — warknął nagle, obracając się na pięcie i celując szpicrutą prosto w klatkę piersiową osłupiałego Michała. — Ty będziesz od teraz moją nową, zmotoryzowaną dywizją pancerną! Weź natychmiast ten ciężki wózek z brudnymi ręcznikami i bezszelestnie flankuj od wschodu tamto bulgoczące jacuzzi!
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Ależ panie Generale, bardzo przepraszam, ale tam przecież w tej chwili kąpią się żywi ludzie... — zaprotestował słabo Michał, wskazując palcem na wannę z hydromasażem i chwytając posłusznie za rączkę metalowego wózka.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — To wcale nie są żadni ludzie! W czasie brutalnej wojny nie ma ludzi! To są wrodzy cywile na naszym suwerennym terytorium! — ryknął Von Wrzask, plując dookoła lotniczymi oparami. — Nie dyskutować z przełożonym! Przejąć jacuzzi!
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Michał z najcięższym z możliwych westchnień przepchnął piszczący wózek pod murek okrągłej wanny z bąbelkami. W gorącej, kotłującej się wodzie, w całkowitym błogostanie, siedziała właśnie para współczesnych, zadbanych emerytów z zachodnich Niemiec, którzy naiwnie wykupili w Gravemont Hottel relaksujący turnus zdrowotny z popularnego portalu zniżkowego.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Generał stanął nad nimi, opierając ręce na biodrach i rzucając groźny cień na ich podwodny masaż lędźwi.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Entschuldigung, guten Tag — powiedział bardzo kulturalnie starszy, łysiejący pan, podnosząc łagodny wzrok na wrzeszczącego oficera i przecierając zaparowane od gorąca okulary. — Czy szanowny pan jest tu może jakimś nowym, hotelowym animatorem czasu wolnego? Czy to, co państwo tu robią, to jest jakiś lokalny, polski performance historyczny dla gości? Muszę przyznać, że to naprawdę wyśmienicie i bardzo realistycznie uszyty mundur!
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Na te niewinne, przepełnione turystycznym uznaniem słowa Generał Von Wrzask po prostu spęczniał z czystej wściekłości, przybierając gwałtownie odcień purpury, który w każdej innej epoce groziłby natychmiastowym wylewem.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Animator?! Ja miałbym być jakimś podrzędnym, tańczącym animatorem od wodnego aerobiku?! — wrzasnął, a echo jego bojowej furii zagłuszyło nawet najgłośniejsze bulgotanie dysz masujących. — Ja jestem Generał Von Wrzask! Głównodowodzący Frontu Wschodniego, Zachodniego, a od dzisiaj z rana także tego tutejszego, w zakichanej Czasoprzestrzeni! Macie natychmiast i bezwarunkowo wynosić się z mojej militarnej wody termalnej, wy bezczelne, nieposłuszne psubraty!
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Emeryt patrzył na niego przez dłuższą chwilę w całkowitym, kulturowym osłupieniu. Następnie ciężko i z ogromnym niesmakiem westchnął, potrząsając głową nad ewidentnym brakiem standardów w polskiej obsłudze hotelowej.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Helga, mein Schatz, wychodzimy stąd natychmiast, chodźmy lepiej do sauny parowej — powiedział z głęboką urazą, pomagając oburzonej żonie wstać z gorącej wody. — Ten pan jest wyjątkowo nieuprzejmy, agresywny i całkowicie psuje nam tutejszą strefę zen. Nie zapłaciliśmy w euro za takie traktowanie. Gwarantuję ci, moja droga, że zaraz po powrocie do pokoju usiądę do tabletu i napiszę im absolutnie druzgocącą skargę z jedną gwiazdką na TripAdvisorze!
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Gdy zdegustowana para w białych, hotelowych szlafrokach opuściła pomieszczenie, głośno trzaskając szklanymi drzwiami i mrucząc pod nosem o braku profesjonalizmu, Generał z niekłamaną dumą wypiął pierś obwieszoną zardzewiałymi orderami. Obejrzał się na Michała, Mietka i zdezorientowanego Hansa z miną absolutnego, niepokonanego militarnego geniusza.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Ha! Widzicie to wyraźnie?! — zakrzyknął tryumfalnie, prężąc się na śliskim brzegu basenu i wywijając szpicrutą. — Uciekają w popłochu przed samą naszą potęgą! Nawet nie podjęli fizycznej walki! To jest wiekopomne, bezkrwawe zwycięstwo! Chwalebna Rzesza właśnie oficjalnie i ostatecznie zajęła bąbelki!
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Generał Von Wrzask, niesamowicie wręcz rozochocony i upojony swoim bezkrwawym, błyskawicznym zwycięstwem nad dwójką zdezorientowanych, niemieckich emerytów, postanowił kuć żelazo, póki było gorące. Kąty jego ust wykrzywiły się w fanatycznym, zdobywczym uśmiechu. Benzyna lotnicza krążąca w jego ektoplazmatycznych żyłach dodała mu skrzydeł.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — A teraz, moi drodzy, zajmiemy z marszu tamtą strategiczną saunę parową! — obwieścił, wskazując szpicrutą na oszklone drzwi, za którymi kłębiła się mgła. — Zrobimy tam doskonały obóz jeniecki dla opornych! A potem... potem wreszcie zmusimy cały ten przeklęty, niesubordynowany hotel do absolutnej, pruskiej dyscypliny! Koniec z jakimikolwiek fizycznymi anomaliami! Koniec z tolerowaniem miękkości! Od dzisiaj czas ma maszerować równym, miarowym krokiem do przodu, a nie wić się w jakichś zdegenerowanych, lewicowych pętlach!
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Aby ostatecznie i dobitnie podkreślić swoją nowo ustanowioną władzę absolutną nad Strefą Wellness, Generał wyciągnął z kabury swój ciężki, zabytkowy pistolet Luger P08. Zanim Michał zdążył krzyknąć ostrzegawczo, oficer wycelował broń w górę i z hukiem, który zatrząsł kafelkami, oddał strzał ostrzegawczy prosto w podwieszany sufit.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        To był błąd. Z perspektywy taktycznej — błąd ostateczny i katastrofalny w skutkach.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Gravemont Hottel nie wybaczał takich aktów wandalizmu. Ołowiana kula z łatwością przebiła cienki gipsokarton i z głośnym, metalicznym wizgiem rozerwała jedną z głównych rur instalacyjnych.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Sęk w tym, że w tym konkretnym skrzydle budynku rurami absolutnie nie płynęła zwykła, podgrzana woda. To, co uchodziło za parę wodną zasilającą sauny, w rzeczywistości było Parą Mnemiczną. Był to niezwykle skomplikowany, gazowy nośnik pamięci zbiorowej całego hotelu. Płynęły w nim skondensowane żale, niespełnione obietnice, zarchiwizowane skargi gości i potężny ładunek historycznej biurokracji z ostatnich stu lat.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Z poszarpanej dziury w rurze z potwornym, ogłuszającym sykiem buchnął gęsty, mlecznobiały obłok. Zamiast jednak opaść na kafelki, para zaczęła gwałtownie wirować pod sufitem, formując się w wyraźne, humanoidalne kształty.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Po kilku sekundach w powietrzu zawisły mściwe widma. Pojawiły się półprzezroczyste duchy poprzednich, doprowadzonych do zawału managerów, wymachujące niematerialnymi arkuszami kalkulacyjnymi. Zmaterializowały się widma skrajnie niezadowolonych gości z lat siedemdziesiątych, wciąż domagających się czystych ręczników. Jednak co było w tym wszystkim zdecydowanie najgorsze — z pary uformowały się najprawdziwsze, bezduszne Echa Biurokracji.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Niemal w tej samej sekundzie czarna, gęsta woda w głównym basenie zaczęła złowieszczo bulgotać.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Z lepkiego, przypominającego kisiel płynu powoli, z leniwym pluskiem wynurzyły się Topielce z rocznika dziewięćdziesiątego siódmego. Były to istoty tragiczne w swej naturze — ich skóra była sina, dłonie potwornie napuchnięte i pomarszczone od wiecznego odmakania, a na twarzach malował się wyraz tak głębokiego, egzystencjalnego smutku, że na sam ich widok chciało się napisać wiersz o bezsensie życia. Mieli na sobie wyblakłe, neonowe kąpielówki, które dawno wyszły z mody.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Ciszaaa... — zabulgotał przeciągle Główny Topielec. Jego głos przypominał dźwięk spuszczanej z oporem wody w wannie. Wypluł z ust trochę mułu i spojrzał na Generała mętnym wzrokiem. — Dlaczego tak potwornie krzyczysz, człowieku...? Przecież tu jest strefa relaksuuu... tu obowiązuje strefa ciszyyy...
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Generał Von Wrzask, choć ewidentnie osaczony z dwóch stron, nie zamierzał kapitulować przed zjawiskami nadprzyrodzonymi. Z dzikim, wojennym amokiem w oczach wycelował lufę dymiącego Lugera prosto w nabrzmiałą klatkę piersiową wodnego umarlaka.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Milczeć, podludzie! — zaryczał, nie cofając się ani o krok. — Jesteście otoczeni przez moją jednoosobową armię! Poddajcie się natychmiast jurysdykcji Rzeszy!
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — My już dawno się poddaliśmy... — jęknął drugi Topielec, opierając się smutno o drabinkę basenową i wzdychając z niewysłowionym żalem. — Poddaliśmy się inflacji... poddaliśmy się brakom w zaopatrzeniu... a na końcu poddaliśmy się całkowicie tej wszechobecnej wilgoci. Chodź do nas na dno... woda jest dziś całkiem ciepła... i taka pełna kojącego chloru... tu już nic nie musisz...
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Von Wrzask mimowolnie cofnął się o krok, czując niewytłumaczalny, lodowaty dreszcz na plecach. Mógł walczyć z czołgami, mógł znosić ostrzał artyleryjski, ale apatyczna rezygnacja tych wodnych zombie była dla jego umysłu po prostu nie do zniesienia.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Gdy zrobił kolejny krok w tył, wpadł prosto w otaczające go zewsząd duchy z pary.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Z tłumu zjaw wyłoniła się jedna, szczególnie ostra i wyraźna postać. Wyglądała wypisz wymaluj jak zmęczony życiem polski urzędnik skarbowy z połowy lat dziewięćdziesiątych. Miał na nosie okulary w rogowej oprawie z pękniętym szkłem, a pod pachą trzymał widmową teczkę.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Panie Generale, chwileczkę, prosimy o uwagę — odezwał się duch urzędnika głosem suchym, pozbawionym jakichkolwiek emocji i przypominającym szelest papieru. Zsunął okulary na czubek nosa. — Czy przed rozpoczęciem dzisiejszych działań zbrojnych wypełnił pan i złożył w trzech egzemplarzach druk Z-15, dotyczący aneksji terytorium neutralnego? Z załącznikiem B-2 o użyciu broni palnej w pomieszczeniach zamkniętych?
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Co takiego?! — wrzasnął Generał, a jego twarz wykrzywiła się w absolutnej zgrozie. Przewidywał opór zbrojny, ale nie papierologię stosowaną. — Ja nigdy w życiu nie wypełniam żadnych parszywych druków! Ja nie jestem jakimś gryzipiórkiem! Ja tworzę wielką, światową historię!
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Duch urzędnika spojrzał na niego zza stłuczonego szkła z bezbrzeżnym politowaniem, uśmiechając się krzywo.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Szanowny panie, w tym kraju historia bez odpowiedniej, okrągłej pieczątki z orzełkiem i podpisu kierownika jest po prostu prawnie nieważna.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Zaraz po wypowiedzeniu tych słów, urzędnik uniósł dłoń. Echa Biurokracji wydały z siebie kolektywny, bojowy okrzyk przypominający dźwięk zacinającej się niszczarki do dokumentów.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Ułamki sekund później z mlecznej pary zmaterializowały się dziesiątki ciężkich, wypchanych po brzegi segregatorów, zszywaczy tapicerskich i twardych pieczątek. Cały ten biurokratyczny arsenał runął prosto z powietrza z niewyobrażalną siłą, uderzając w zdezorientowanego Generała gradem ołowianych przepisów i aktów prawnych, przeciwko którym nie istniała żadna skuteczna obrona militarna.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Generał Von Wrzask znalazł się w absolutnym, niemożliwym do obrony potrzasku, z którego nie wybawiłaby go nawet cała dywizja pancerna zrzucana na spadochronach. Sytuacja taktyczna była dramatyczna i pogarszała się z każdą nanosekundą.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Z lewej flanki napierały na niego sine, ociekające depresją i chlorowaną wodą Topielce, które z upiorną łagodnością próbowały wciągnąć go w objęcia wilgotnej, basenowej beznadziei. Z prawej flanki z kolei zmasowany atak przypuścili zmaterializowani z oparów Urzędnicy-Widma. Powietrze było gęste od latających niczym szrapnele segregatorów, druków L-4, wezwań do zapłaty i brutalnie stemplowanych odmów przyznania dotacji.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Hans! — zaryczał zdesperowany dowódca, osłaniając twarz przed nadlatującym, grubym na pięć centymetrów rocznikiem statystycznym z Głównego Urzędu Statystycznego. — Hans, do ciężkiej cholery! Na pomoc! Użyj natychmiast naszej Wunderwaffe! Zmieć ten cywilny opór z powierzchni ziemi!
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Hans, legendarny Żołnierz z Pustki, w ogóle nie rzucił się na ratunek. Stał spokojnie w bezpiecznej odległości, oparty niedbale plecami o pokrytą grzybem ścianę obok przebieralni. Powoli, z niesamowitym namaszczeniem i melancholią pykał swojego świecącego e-papierosa, wypuszczając w wilgotne powietrze gęstą, syntetyczną chmurę o smaku truskawki.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Spojrzał swoimi martwymi, błękitnymi oczami na miotającego się dowódcę. Potem przeniósł wzrok na zdziwionego Michała. Na końcu spojrzał na Wujka Mietka, który w ramach kibicowania oparł się o kafelki i skrzyżował ramiona na piersi.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Żołnierz wziął kolejny, głęboki oddech z maszyny, co pod jego maską gazową zabrzmiało dokładnie tak, jakby ktoś powoli i z wysiłkiem pompował wielki miech kowalski. W końcu oderwał się od ściany i ciężkim, podkutym krokiem podszedł do krawędzi basenu, zatrzymując się tuż przed swoim przełożonym.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Herr General... — zaczął niespodziewanie spokojnym, wypranym z jakichkolwiek wojskowych emocji głosem.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Strzelaj do nich, ty skończony idioto! Zabezpiecz mój odwrót! — wrzasnął Von Wrzask, kopiąc w kostkę nacierającego na niego Głównego Topielca, który tylko smutnie westchnął z bólu.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Nie będę strzelał — odparł chłodno Hans, strzepując niewidzialny pyłek ze swojej pracowniczej bluzy. — Wojna się już dawno skończyła, generale. Z przykrością melduję, że sromotnie ją przegraliśmy. I to tak naprawdę dawno temu. Czas iść dalej.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Generał zamarł, a na jego purpurową twarz wystąpiły żyły grubości kabli zasilających.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Kłamstwo! To jest defetyzm i parszywe kłamstwo! — wrzasnął, zaciskając dłonie na rękojeści Lugera. — Tysiącletnia Rzesza jest wieczna!
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Nic na tym świecie nie jest wieczne, dowódco — powiedział cicho Hans, a w jego głosie zabrzmiała mądrość kogoś, kto przez dekady wpatrywał się w pustkę podziemi. — Po tych wszystkich latach tutaj zrozumiałem, że wieczny jest wyłącznie ten przeklęty hotel. Ten hotel... oraz kredyty hipoteczne we frankach szwajcarskich. Cała reszta to tylko chwilowy pył na wietrze historii.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Nie czekając na wybuch furii przełożonego, Żołnierz z Pustki sięgnął powoli do głębokiej kieszeni swoich zniszczonych spodni mundurowych. Wyciągnął z niej wielokrotnie składaną, zalanatą i pogniecioną, zalaminowaną kartkę papieru, która wyglądała, jakby przeszła przez maszynkę do mięsa.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Był to oficjalny, zatwierdzony przez zarząd i Sanepid, twardy Regulamin Strefy Basenowej.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Zgodnie z obowiązującymi tu prawami fizyki i administracji... — Hans odchrząknął i zaczął z namaszczeniem czytać. — Artykuł czwarty, punkt siódmy. Cytuję: „Na całym mokrym terenie basenu oraz w strefach przyległych obowiązuje kategoryczny, bezwzględny zakaz noszenia mundurów wojskowych, posiadania broni palnej, wnoszenia jedzenia w słoikach oraz wygłaszania głośnych, totalitarnych przemówień zakłócających relaks. Strój bezwzględnie obowiązujący każdego gościa to: czyste kąpielówki przylegające do ciała oraz czepek ochronny”. Koniec cytatu.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Von Wrzask powoli, z narastającym, niemożliwym do opisania przerażeniem w oczach przeniósł wzrok z zalaminowanej kartki w dłoniach podwładnego na swoje wypolerowane na błysk, lśniące czernią oficerki. Następnie spojrzał na swój order Żelaznego Krzyża.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Czepek? — szepnął, a jego głos złamał się tragicznie, po raz pierwszy obnażając słabość. — Ja... potężny dowódca operacyjny... w gumowym czepku?
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Tak jest, Herr General — potwierdził Hans z sadystycznym brakiem litości. — I do tego w czepku gumowym. W jaskrawym kolorze różowym. Bo wszystkie inne, bardziej stonowane barwy, niestety się z rana skończyły w recepcji.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Jak na komendę, Mietek wystąpił naprzód, wyciągając z przepastnej kieszeni swojego drelichu intensywnie różowy, ciasny czepek pływacki. Na jego środku widniał nadrukowany, uśmiechnięty delfinek z piłką.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Zakładaj to na łeb, panie władzo — powiedział twardo konserwator, podając mu gumę z miną człowieka, który nie znosi sprzeciwu. — Zakładaj to szybko i grzecznie wskakuj w gacie, albo robisz natychmiastowy wypad z naszego obiektu. Główny ratownik już na ciebie patrzy i zaczyna się denerwować. A uwierz mi, nie chcesz go denerwować.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Generał z obłędem w oczach powiódł wzrokiem w kierunku wskazanym przez palec Mietka.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Wysoko, na ratowniczym, białym krześle z plastiku, górującym nad całą halą basenową, rzeczywiście ktoś siedział. Był to mroczny, gęsty Cień z Piątego Piętra. Cień nie posiadał twarzy, oczu, ani nawet ust, ale z ogromnym zaangażowaniem właśnie pochłaniał w przerwie śniadaniowej kanapkę z żółtym serem, a jego absolutny mrok i skoncentrowana poza były niezwykle, przerażająco wręcz wymowne. Trzymał w dłoni czerwony gwizdek, gotów go użyć.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        To był ten jeden, decydujący moment. Duma Generała, budowana latami na polach bitew i w sztabach dowodzenia, po prostu, z głuchym trzaskiem pękła na pół. Wizja spektakularnego podboju całego, wielowymiarowego świata załamała się drastycznie w bezpośrednim zderzeniu z ponurą, upokarzającą koniecznością naciągnięcia na głowę różowego, gumowego delfina.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — To... to jest celowe, zaplanowane upokorzenie rasy panów! — krzyknął histerycznie, odrzucając czepek jak oparzony. — To jest najwyższa zdrada stanu! Ja tego tak nie zostawię! Wracam natychmiast do tysiąc dziewięćset czterdziestego trzeciego roku! Tam przynajmniej urzędnicy mieli elementarny szacunek do niemieckiego munduru!
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        W akcie ostatecznej frustracji i zranionej dumy Generał odwrócił się gwałtownie na pięcie, by wykonać swój tryumfalny odwrót.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Jednakże gładka, mokra kafelka przy krawędzi okazała się podstępnym wrogiem. Jego podkuty stalą oficer stracił przyczepność. Von Wrzask z głośnym, niepoważnym okrzykiem poślizgnął się spektakularnie, zamachał dziko rękami w powietrzu, próbując złapać równowagę, i z potężnym, upokarzającym pluskiem wpadł plecami prosto do płytkiego brodzika dla małych dzieci, w którym unosiły się plastikowe kaczuszki.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Płytka woda w ułamku sekundy zareagowała na intruza z przeszłości. Zasyczała wściekle, jak kwas polany na metal.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Generał zaczął gwałtownie znikać, dosłownie wsysany w dół i brutalnie wciągany przez ogromny, błyszczący fioletem wir czasoprzestrzenny, który z racji awarii hydrauliki znajdował się od wczoraj centralnie w głównym odpływie brodzika.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Ja jeszcze się zemszczęęęę! — bulgotał rozpaczliwie oficer, połykając wodę z chlorem i kręcąc się w kółko jak w pralce. Wystawała mu już tylko głowa i ramię z zaciśniętą pięścią. — Zobaczycie! Wymorduję was! Wrócę tu do was z całą, pancerną armią czystych ręczników! Odbiorę wam tę saunęęę!
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        <em>PLUM.</em>
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        I całkowicie zniknął w ciemnej rurze, pożarty przez hydraulikę czasoprzestrzenną. Odpływ głośno siorbnął, po czym woda w brodziku z powrotem stała się przeraźliwie spokojna. Na jej chlorowanej powierzchni, pośród żółtych zabawek, pozostał samotnie unoszący się, lśniący, złoty monokl.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        W zaduchu i oparach Strefy Wellness nagle zapadła głucha, wręcz dzwoniąca w uszach cisza. Pobojowisko powoli stygło.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Sine Topielce z lat dziewięćdziesiątych z głuchym pluśnięciem, bez jednego słowa komentarza, zanurzyły się z powrotem w czarnym kisielu głównego basenu, wracając do swojej wiecznej medytacji nad rosnącymi stopami procentowymi. Agresywne, papierowe duchy urzędników, pozbawione celu swojej inspekcji, po prostu zamieniły się z powrotem w kłęby zwykłej, białej pary i uleciały w stronę wentylacji, szumiąc cicho o braku załączników. Cień ratownika na wieży po prostu wrócił do żucia swojej niewidzialnej kanapki.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Hans, uwięziony w ciele żywego trupa w niemieckim mundurze, stał nieruchomo nad małym brodzikiem dla dzieci, pustym wzrokiem wpatrując się w falującą wodę i pływający w niej monokl — jedyne, co fizycznie pozostało z jego srogiego i apodyktycznego przełożonego.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — I co teraz zrobisz, Hans? — zapytał łagodnie Michał, podchodząc do niego z ostrożnością. Chłopak wciąż ściskał w dłoniach rączkę wózka z brudnymi ręcznikami. — Czujesz to? Chyba jesteś wreszcie wolny, prawda?
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Ja... — Hans powoli, z trudem kiwnął głową w masce przeciwgazowej, jakby wciąż nie docierała do niego powaga sytuacji. — Jestem wolny. Absolutnie żadnych więcej krzyków nad uchem z samego rana. Żadnych głupich rozkazów o poszerzaniu przestrzeni życiowej. Nikt mi nie każe maszerować.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Co w takim razie będziesz ze sobą robił? Masz jakiś cel?
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Żołnierz w milczeniu zaciągnął się e-papierosem i wypuścił cienką strużkę truskawkowego dymu przez filtr maski. Spojrzał na zamglone drzwi.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Myślę, że po prostu zostanę tu na stałe. W strefie SPA, jako uczciwy pracownik — powiedział z niezwykłym, głębokim przekonaniem. — Będę tu pracował na pół etatu w saunie parowej. Moja stała temperatura ciała, biorąc pod uwagę fakt, że nie żyję od blisko osiemdziesięciu lat, to absolutne, termodynamiczne zero. Z łatwością będę robił za darmową, wydajną klimatyzację w strefie schładzania po ruskiej bani. Myślę, że się sprawdzę w branży usługowej.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Mietek, słysząc te odważne, zawodowe deklaracje, uśmiechnął się szeroko. Podszedł do niego i serdecznie, z potężną siłą poklepał sztywnego, zimnego trupa po plecach.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — To jest obiektywnie bardzo dobry, dojrzały plan, synu. Każde ręce do pracy się tu przydadzą. Witaj oficjalnie w załodze Gravemont! — rzucił wesoło konserwator, po czym podniósł w górę ostrzegawczo palec. — Tylko pamiętaj o nowym protokole obsługi. Pod żadnym pozorem nie strasz mi tu płacących klientów na korytarzach. I jak cię któryś z nich kulturalnie zapyta po angielsku o drogę do najbliższej toalety, to na litość boską, po prostu pokaż mu drzwi z kółkiem, a nie rysuj mapy na wschód i nie pokazuj im szlaku na Stalingrad.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Gdy we trzech powoli, w poczuciu dobrze spełnionego obowiązku opuszczali duszny teren basenu, Michał czuł się w głębi duszy jakoś dziwnie, niezwykle lekko. Udało im się bez jednego wystrzału pokonać fanatycznego, nazistowskiego generała wyłącznie za pomocą zalaminowanego regulaminu pływalni oraz różowego czepka z delfinem. To było potężne zwycięstwo polskiej biurokracji nad niemieckim militaryzmem.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Gdy tylko weszli z powrotem do głównego lobby, za kontuarem czekała już na niego niezawodna Grażyna. Bez słowa wyciągnęła przed siebie dłoń, w której dyndał ciężki, mosiężny klucz.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Dobrze, że jesteś, panie bohaterze — rzuciła sucho recepcjonistka. — Pokój dwieście dwanaście znowu zgłasza krytyczną usterkę na recepcji. Zagraniczny gość bardzo zdenerwowany twierdzi, że z jego kranu pod prysznicem, zamiast zimnej wody, agresywnie leci czysty, nieskompresowany Ryszard Wagner i cały pokój rezonuje w rytm cwału Walkirii.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Wagner? Aż z samego kranu? — Michał wziął klucz z jej dłoni, ważąc go w ręce. — Aha. No tak. To są z pewnością jakieś poplątane echa, zanieczyszczenia i resztki w wodociągach po tym naszym Generale Von Wrzasku. Nic wielkiego. Zaraz zejdę do rozdzielni, przepłuczę im te rury twardym, podwójnym uderzeniem disco polo z kasety magnetofonowej, i Wagner natychmiast powinien uciec do kanalizacji.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Z wolna podszedł do wielkich, brudnych okien w lobby. Za matowym szkłem właśnie powoli i majestatycznie zachodziło wściekle fioletowe słońce, co zwiastowało, że lokalny układ słoneczny miał znów jakiś problem ze sterownikami kolorów. Potężny, rzeźbiony zegar w holu, którego wskazówki kręciły się trochę z własnej woli, z potężnym gongiem wybił godzinę 23:47.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — No i proszę. Przetrwaliśmy kolejny, cudowny dzień w pracowniczym raju — powiedział cicho Michał sam do siebie, wzdychając z ulgą i ruszając ciężkim krokiem w stronę zacinającej się windy osobowej. — A przynajmniej nikt z gości do mnie od rana nie strzela z broni palnej. Trzeba doceniać małe sukcesy.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Wcisnął wytarty guzik przywołania. Drzwi windy rozsunęły się z dramatycznym, głośnym zgrzytem rdzewiejących prowadnic.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Znowu się spóźniłeś na gorący obiad, młody człowieku — oświadczyła winda stanowczym, pełnym autentycznego, matczynego wyrzutu głosem, odtwarzając nagranie z głębi jego dzieciństwa. — Wszystko już dawno wystygło. Ile razy mam ci powtarzać, żebyś wracał o czasie?
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Wiem, mamo, przepraszam najmocniej — odparł Michał, wchodząc do kabiny i opierając głowę o chłodne lustro. Zmęczenie powoli odbierało mu władzę w nogach. — Ale miałem bardzo ważny powód. Walczyłem z faszyzmem w piwnicy. I z nadmierną biurokracją też.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        — Ty jak zwykle masz na wszystko te swoje wyssane z palca wymówki. Nigdy z ciebie nic nie będzie, jak nie zaczniesz jeść regularnie — skwitowała cierpko matczyna sztuczna inteligencja windy, po czym drzwi z hukiem się zatrzasnęły. — Skoro nie zjadłeś kotleta, to zjedz chociaż witaminy. Masz to jabłko.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Michał uśmiechnął się słabo pod nosem, zjeżdżając powoli w dół. Sięgnął do kieszeni zniszczonej marynarki i wyciągnął z niej błyszczące, czerwone jabłko. Był to wyjątkowy owoc, który osobiście ukradł z wózka cateringowego z okazji ostatniego "Owocowego Czwartku" zorganizowanego przez korporację, a następnie przezornie zakonserwował je na miękko w słoiku z techniczną formaliną, żeby tylko po jednym dniu nie pokryło się złośliwym, gadającym grzybem.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        Przetarł je o rękaw i z głośnym chrupnięciem ugryzł solidny kawałek.
+                    </p>
+
+                    <p class="chapter-paragraph">
+                        W ustach natychmiast poczuł specyficzny, cierpki smak. Smakowało absolutnym, bezkompromisowym zwycięstwem wrogich sił biurokracji. I trochę też techniczną, gryzącą w przełyk formaliną z zeszłego miesiąca. Ale przede wszystkim smakowało czystym zwycięstwem przetrwania. I to było w tym wszystkim najważniejsze.
+                    </p>
+
+                </div>
+            
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+
+    <!-- =====================================================
+         FORMULARZE
+         ===================================================== -->
+
+    <main
+        id="formularze"
+        class="tab-content"
+    >
+
+        <p class="intro">
+
+            &gt;
+            FORMULARZE UŻYTKU CODZIENNEGO.
+
+            <br>
+
+            &gt;
+            DOKUMENTY SATYRYCZNE.
+
+        </p>
+
+
+        <div class="forms-grid">
+
+
+            <div class="form-card">
+
+                <div class="form-number">
+                    G.U.K.R. / F-001
+                </div>
+
+                <h3>
+                    WNIOSEK O UZNANIE,
+                    ŻE TO NIE JEST
+                    W ZAKRESIE
+                    MOICH OBOWIĄZKÓW
+                </h3>
+
+                <button
+                    onclick="downloadForm('F001')"
+                >
+                    POBIERZ
+                </button>
+
+            </div>
+
+
+            <div class="form-card">
+
+                <div class="form-number">
+                    G.U.K.R. / F-002
+                </div>
+
+                <h3>
+                    ZGŁOSZENIE
+                    KRYTYCZNEGO
+                    NIEDOBORU KAWY
+                </h3>
+
+                <button
+                    onclick="downloadForm('F002')"
+                >
+                    POBIERZ
+                </button>
+
+            </div>
+
+
+            <div class="form-card">
+
+                <div class="form-number">
+                    G.U.K.R. / F-003
+                </div>
+
+                <h3>
+                    WNIOSEK O CZASOWE
+                    ZAPRZESTANIE
+                    ZAWRACANIA GŁOWY
+                </h3>
+
+                <button
+                    onclick="downloadForm('F003')"
+                >
+                    POBIERZ
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </main>
+
+
+
+    <!-- =====================================================
+         ARCHIWUM POSTACI
+         ===================================================== -->
+
+    <main
+        id="postacie"
+        class="tab-content"
+    >
+
+        <p class="intro">
+
+            &gt;
+            ARCHIWUM OSOBOWE G.U.K.R.
+
+            <br>
+
+            &gt;
+            OBRAZY SĄ JAWNE.
+
+            <br>
+
+            &gt;
+            INFORMACJE O PODMIOTACH
+            SĄ ZASZYFROWANE.
+
+            <br><br>
+
+            KOD DOSTĘPU
+            ZNAJDUJE SIĘ
+            NA OBRAZIE DANEJ POSTACI.
+
+            <br>
+
+            &gt;
+            ANALIZUJ.
+
+            <br>
+
+            &gt;
+            ZNAJDŹ KOD.
+
+            <br>
+
+            &gt;
+            AUTORYZUJ KARTOTEKĘ.
+
+        </p>
+
+
+        <div
+            id="character-grid"
+            class="character-grid"
+        ></div>
+
+
+    </main>
+
+
+</div>
+
+
+
+<script>
+
+/* =========================================================
+   ZMIENNE
+   ========================================================= */
+
+let alphaAuthorized = false;
+
+let requestedLevel = null;
+
+let omegaActivated = false;
+
+
+/* =========================================================
+   HASŁA POZIOMÓW
+   ========================================================= */
+
+const levelPasswords = {
+
+    ALFA: "457",
+
+    BETA: "812",
+
+    GAMMA: "314",
+
+    DELTA: "271",
+
+    EPSILON: "619",
+
+    DZETA: "503",
+
+    ETA: "728",
+
+    THETA: "404",
+
+    IOTA: "931",
+
+    KAPPA: "117",
+
+    LAMBDA: "666",
+
+    MY: "245",
+
+    NY: "701",
+
+    KSI: "390",
+
+    OMIKRON: "808",
+
+    PI: "141",
+
+    RHO: "529",
+
+    SIGMA: "777",
+
+    TAU: "362",
+
+    YPSILON: "915",
+
+    FI: "618",
+
+    CHI: "204",
+
+    PSI: "909",
+
+    OMEGA: "000"
+
+};
+
+
+/* =========================================================
+   BAZA POSTACI
+   ========================================================= */
+
+/*
+    Tutaj zmieniasz:
+
+    title       = nazwa postaci
+    image       = nazwa pliku
+    code        = kod ukryty na obrazie
+    status      = status
+    classification = klasyfikacja
+    description = opis
+
+    UWAGA:
+
+    Obecne kody są przykładowe.
+
+    Musisz ustawić takie,
+    jakie faktycznie umieścisz
+    na obrazach.
+*/
+
+const characterDatabase = [
+
+    {
+
+        id: "postac01",
+
+        title:
+            "MICHAŁ",
+
+        image:
+            "obrazy/michal.png",
+
+        code:
+            "731",
+
+        status:
+            "AKTYWNY",
+
+        classification:
+            "PERSONEL TECHNICZNY",
+
+        description:
+            `
+            Michał jest jednym z nielicznych
+            członków personelu Gravemont Hottel,
+            którzy zachowują zdolność
+            funkcjonowania pomimo regularnego
+            kontaktu z anomaliami rzeczywistości.
+
+            Najczęściej obserwowany
+            z mopem.
+
+            Nie ustalono,
+            czy mop należy traktować
+            jako sprzęt sprzątający,
+            broń,
+            czy obiekt strategiczny.
+            `
+
+    },
+
+
+    {
+
+        id: "postac02",
+
+        title:
+            "DOKTOR ŻEŹNIA",
+
+        image:
+            "obrazy/doktor żeźnia.png",
+
+        code:
+            "204",
+
+        status:
+            "AKTYWNY",
+
+        classification:
+            "PODMIOT NIESTABILNY",
+
+        description:
+            `
+            Podmiot prowadzi działalność,
+            która wielokrotnie korelowała
+            z naruszeniami lokalnych
+            praw fizyki.
+
+            Zalecenie G.U.K.R.:
+
+            zachować bezpieczny dystans.
+
+            Nie pytać,
+            skąd pochodzi sprzęt.
+            `
+
+    },
+
+
+    {
+
+        id: "postac03",
+
+        title:
+            "doktor ortega",
+
+        image:
+            "obrazy/doktor ortega.png",
+
+        code:
+            "815",
+
+        status:
+            "AKTYWNY",
+
+        classification:
+            "NAUKOWIEC / ANOMALIA",
+
+        description:
+            `
+            Podmiot regularnie
+            obserwowany w obecności
+            niezidentyfikowanych substancji.
+
+            Towarzyszący mu ptak
+            również znajduje się
+            pod obserwacją G.U.K.R.
+            `
+
+    },
+
+
+    {
+
+        id: "postac04",
+
+        title:
+            "grażyna",
+
+        image:
+            "obrazy/grażyna.png",
+
+        code:
+            "316",
+
+        status:
+            "AKTYWNA",
+
+        classification:
+            "PERSONEL OPERACYJNY",
+
+        description:
+            `
+            Podmiot wykazuje
+            podwyższoną gotowość bojową.
+
+            Charakterystyczne wyposażenie:
+
+            broń palna
+            oraz niestandardowa tarcza.
+
+            Dalsze dane pozostają
+            częściowo utajnione.
+            `
+
+    },
+
+
+    {
+
+        id: "postac05",
+
+        title:
+            "niedźwiedż wojtek",
+
+        image:
+            "obrazy/niedźwiedż wojtek.png",
+
+        code:
+            "902",
+
+        status:
+            "OBSERWOWANY",
+
+        classification:
+            "PODMIOT NIESTANDARDOWY",
+
+        description:
+            `
+            Inteligentny podmiot
+            o cechach niedźwiedzia.
+
+            Zachowanie:
+            spokojne,
+            metodyczne,
+            wyjątkowo uprzejme.
+
+            Nie należy mylić
+            uprzejmości
+            z brakiem zagrożenia.
+            `
+
+    },
+
+
+    {
+
+        id: "postac06",
+
+        title:
+            "chrono",
+
+        image:
+            "obrazy/chrono.png",
+
+        code:
+            "447",
+
+        status:
+            "AKTYWNY",
+
+        classification:
+            "PODMIOT UZBROJONY",
+
+        description:
+            `
+            Podmiot regularnie
+            pojawia się w pobliżu
+            miejsc o podwyższonej
+            niestabilności.
+
+            Towarzyszą mu
+            niezidentyfikowane byty.
+
+            Nie ustalono,
+            czy są sojusznikami,
+            projekcjami,
+            czy pasożytami.
+            `
+
+    },
+
+
+    {
+
+        id: "postac07",
+
+        title:
+            "JEDNOSTKA TRANSPORTOWA",
+
+        image:
+            "obrazy/polonez intelstellar.png",
+
+        code:
+            "621",
+
+        status:
+            "W RUCHU",
+
+        classification:
+            "POJAZD ANOMALNY",
+
+        description:
+            `
+            Jednostka kolejowa
+            o nieustalonym pochodzeniu.
+
+            Pojazd był obserwowany
+            poza standardową
+            strukturą czasu
+            i przestrzeni.
+
+            Trasa:
+            nieznana.
+            `
+
+    },
+
+
+    {
+
+        id: "postac08",
+
+        title:
+            "doktor voss",
+
+        image:
+            "obrazy/doktor voss.png",
+
+        code:
+            "193",
+
+        status:
+            "AKTYWNY",
+
+        classification:
+            "AGENT / BADACZ",
+
+        description:
+            `
+            Podmiot posługuje się
+            analogowym sprzętem
+            badawczym.
+
+            Część urządzeń
+            nie odpowiada
+            żadnej znanej
+            technologii G.U.K.R.
+            `
+
+    },
+
+
+    {
+
+        id: "postac09",
+
+        title:
+            "hans",
+
+        image:
+            "obrazy/hans.png",
+
+        code:
+            "508",
+
+        status:
+            "NIEUSTALONY",
+
+        classification:
+            "ŻOŁNIERZ / ANOMALIA",
+
+        description:
+            `
+            Podmiot wyposażony
+            w wojskowy kombinezon
+            oraz maskę przeciwgazową.
+
+            Data pochodzenia
+            pozostaje nieustalona.
+
+            Możliwe przemieszczenie
+            temporalne.
+            `
+
+    },
+
+
+    {
+
+        id: "postac10",
+
+        title:
+            "kierownik",
+
+        image:
+            "obrazy/kierownik.png",
+
+        code:
+            "774",
+
+        status:
+            "AKTYWNY",
+
+        classification:
+            "PODMIOT ADMINISTRACYJNY",
+
+        description:
+            `
+            Podmiot posiada dokumenty
+            sugerujące możliwość
+            zawierania umów
+            wykraczających poza
+            standardową długość życia.
+
+            Nie podpisywać
+            żadnego dokumentu
+            bez konsultacji
+            z G.U.K.R.
+            `
+
+    },
+
+
+    {
+
+        id: "postac11",
+
+        title:
+            "mietek",
+
+        image:
+            "obrazy/mietek.png",
+
+        code:
+            "427",
+
+        status:
+            "AKTYWNY",
+
+        classification:
+            "PERSONEL TECHNICZNY / PODMIOT UZBROJONY",
+
+        description:
+            `
+            Podmiot wielokrotnie obserwowany
+            podczas sytuacji wymagających
+            ręcznego rozwiązania problemu.
+
+            Charakterystyczne wyposażenie:
+
+            ciężki klucz warsztatowy.
+
+            Według raportów G.U.K.R.
+            narzędzie było wykorzystywane
+            zarówno zgodnie z przeznaczeniem,
+            jak i w zastosowaniach,
+            których producent
+            zdecydowanie nie przewidział.
+
+            PODWYŻSZONA ODPORNOŚĆ:
+
+            - obrażenia fizyczne,
+            - stres,
+            - chaos organizacyjny,
+            - polecenia kierownictwa.
+
+            ZALECENIE G.U.K.R.:
+
+            Nie przeszkadzać,
+            kiedy podmiot twierdzi,
+            że „już prawie to naprawił”.
+            `
+
+    },
+
+
+    {
+
+        id: "postac12",
+
+        title:
+            "stasiek",
+
+        image:
+            "obrazy/stasiek.png",
+
+        code:
+            "619",
+
+        status:
+            "AKTYWNY",
+
+        classification:
+            "PODMIOT NIEPRZEWIDYWALNY",
+
+        description:
+            `
+            Podmiot o niejednoznacznej
+            funkcji operacyjnej.
+
+            Najczęściej obserwowany
+            z zestawem kluczy,
+            papierosem
+            oraz butelką
+            niezidentyfikowanej zawartości.
+
+            Nie ustalono,
+            do czego prowadzą
+            wszystkie posiadane przez niego klucze.
+
+            Część zamków,
+            które udało się z nimi otworzyć,
+            według dokumentacji
+            nigdy nie została zainstalowana.
+
+            ZALECENIE G.U.K.R.:
+
+            Nie przyjmować od podmiotu
+            żadnych propozycji zaczynających się
+            od słów:
+
+            „Mam pomysł”.
+
+            POZIOM ZAGROŻENIA:
+
+            ZMIENNY.
+            `
+
+    },
+
+
+    {
+
+        id: "postac13",
+
+        title:
+            "betonowy pielgrzym",
+
+        image:
+            "obrazy/betonowy pielgrzym.png",
+
+        code:
+            "853",
+
+        status:
+            "NIEUSTALONY",
+
+        classification:
+            "PODMIOT OPANCERZONY / ANOMALIA",
+
+        description:
+            `
+            Tożsamość podmiotu
+            pozostaje częściowo nieznana.
+
+            Całe ciało osłonięte jest
+            segmentowym pancerzem
+            o konstrukcji,
+            której nie udało się
+            jednoznacznie przypisać
+            do żadnej znanej technologii.
+
+            Charakterystyczny element:
+
+            złoty pas przebiegający
+            przez korpus jednostki.
+
+            Podmiot wielokrotnie
+            reagował na anomalie przestrzenne
+            zanim urządzenia G.U.K.R.
+            zdążyły je zarejestrować.
+
+            Nie wiadomo,
+            czy jednostka przewiduje
+            zaburzenia rzeczywistości,
+            czy sama jest ich źródłem.
+
+            ZALECENIE:
+
+            OBSERWOWAĆ.
+
+            NIE PROWOKOWAĆ.
+
+            NIE PRÓBOWAĆ ZDEJMOWAĆ HEŁMU.
+            `
+
+    },
+
+
+    {
+    id: "postac14",
+
+    title:
+        "doktor mruczek",
+
+    image:
+        "obrazy/doktor mruczek.png",
+
+    code:
+        "341",
+
+    status:
+        "AKTYWNY",
+
+    classification:
+        "FELIS CATUS / ANOMALIA OBSERWACYJNA",
+
+    description:
+        `
+        Kot Mruczek jest jednym
+        z najbardziej tajemniczych
+        mieszkańców Gravemont Hottel.
+
+        Oficjalnie:
+
+        kot.
+
+        Nieoficjalnie:
+
+        G.U.K.R. nie jest już pewien,
+        czym właściwie jest.
+
+        Mruczek regularnie pojawia się
+        w miejscach,
+        w których kilka sekund później
+        dochodzi do anomalii
+        czasoprzestrzennych.
+
+        Nigdy nie udało się ustalić,
+        czy przewiduje te zdarzenia,
+        powoduje je,
+        czy po prostu przychodzi
+        zobaczyć,
+        jak ludzie próbują sobie
+        z nimi poradzić.
+
+        Wykazuje ponadprzeciętną
+        inteligencję.
+
+        Rozumie polecenia.
+
+        Zazwyczaj je ignoruje.
+
+        Próby zamknięcia podmiotu
+        w pomieszczeniu zakończyły się
+        niepowodzeniem.
+
+        Mruczek został odnaleziony
+        po drugiej stronie zamkniętych drzwi,
+        zanim personel zdążył je otworzyć.
+
+        Nie stwierdzono:
+
+        - teleportacji,
+        - przechodzenia przez ściany,
+        - manipulacji czasem.
+
+        Nie oznacza to,
+        że żadna z powyższych
+        rzeczy nie miała miejsca.
+
+        POZIOM ZAGROŻENIA:
+
+        NIEUSTALONY.
+
+        ZALECENIA G.U.K.R.:
+
+        Nie próbować łapać.
+
+        Nie zabierać miejsca,
+        które sobie wybrał.
+
+        Nie patrzeć zbyt długo
+        w jego oczy.
+
+        Jeżeli Mruczek nagle
+        opuści pomieszczenie:
+
+        zrobić dokładnie to samo.
+        `
+}
+
+];
+
+
+/* =========================================================
+   RENDEROWANIE ARCHIWUM
+   ========================================================= */
+
+function renderCharacters() {
+
+    const grid =
+        document.getElementById(
+            "character-grid"
+        );
+
+
+    grid.innerHTML = "";
+
+
+    characterDatabase.forEach(
+
+        function(character,index) {
+
+
+            const number =
+                String(index + 1)
+                .padStart(3,"0");
+
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "character-card";
+
+
+            card.id =
+                "card-" +
+                character.id;
+
+
+            card.innerHTML = `
+
+                <div class="character-image-box">
+
+                    <img
+                        class="character-image"
+                        src="${character.image}"
+                        alt="${character.title}"
+                    >
+
+                    <div class="character-number">
+
+                        G.U.K.R. /
+                        GH-${number}
+
+                    </div>
+
+                </div>
+
+
+                <h2>
+
+                    ${character.title}
+
+                </h2>
+
+
+                <div class="character-auth">
+
+                    <input
+                        type="password"
+                        id="code-${character.id}"
+                        placeholder="KOD Z OBRAZU"
+                        autocomplete="off"
+                    >
+
+                    <button
+                        onclick="unlockCharacter('${character.id}')"
+                    >
+                        AUTORYZUJ
+                    </button>
+
+                </div>
+
+
+                <div
+                    class="character-error"
+                    id="error-${character.id}"
+                ></div>
+
+
+                <div
+                    class="character-description"
+                    id="description-${character.id}"
+                >
+
+                    <div class="description-header">
+
+                        [
+                        KARTOTEKA ODSZYFROWANA
+                        ]
+
+                    </div>
+
+
+                    <p>
+
+                        <strong>
+                            PODMIOT:
+                        </strong>
+
+                        ${character.title}
+
+                    </p>
+
+
+                    <p>
+
+                        <strong>
+                            STATUS:
+                        </strong>
+
+                        ${character.status}
+
+                    </p>
+
+
+                    <p>
+
+                        <strong>
+                            KLASYFIKACJA:
+                        </strong>
+
+                        ${character.classification}
+
+                    </p>
+
+
+                    <p>
+
+                        ${character.description}
+
+                    </p>
+
+                </div>
+
+            `;
+
+
+            grid.appendChild(
+                card
+            );
+
+
+        }
+
+    );
+
+}
+
+
+/* =========================================================
+   ODBLOKOWANIE POSTACI
+   ========================================================= */
+
+function unlockCharacter(
+    id
+) {
+
+
+    const character =
+
+        characterDatabase.find(
+
+            item =>
+                item.id === id
+
+        );
+
+
+    if (!character) {
+
+        return;
+
+    }
+
+
+    const input =
+        document.getElementById(
+            "code-" + id
+        );
+
+
+    const error =
+        document.getElementById(
+            "error-" + id
+        );
+
+
+    const description =
+        document.getElementById(
+            "description-" + id
+        );
+
+
+    const card =
+        document.getElementById(
+            "card-" + id
+        );
+
+
+    const enteredCode =
+        input.value.trim();
+
+
+    if (
+        enteredCode ===
+        character.code
+    ) {
+
+
+        error.innerText =
+            "> AUTORYZACJA PRZYJĘTA <";
+
+
+        error.style.color =
+            "#66bb6a";
+
+
+        description
+            .classList
+            .add(
+                "unlocked"
+            );
+
+
+        card
+            .classList
+            .add(
+                "unlocked"
+            );
+
+
+        input.disabled =
+            true;
+
+
+        const button =
+
+            input
+            .parentElement
+            .querySelector(
+                "button"
+            );
+
+
+        button.disabled =
+            true;
+
+
+        button.innerText =
+            "ODBLOKOWANO";
+
+
+        setTimeout(
+
+            function() {
+
+
+                description
+                    .scrollIntoView({
+
+                        behavior:
+                            "smooth",
+
+                        block:
+                            "nearest"
+
+                    });
+
+
+            },
+
+            300
+
+        );
+
+
+    }
+
+    else {
+
+
+        error.innerText =
+
+            "> ODMOWA DOSTĘPU — KOD NIEPRAWIDŁOWY <";
+
+
+        error.style.color =
+            "#ff3333";
+
+
+        input.value =
+            "";
+
+
+        card.animate(
+
+            [
+
+                {
+                    transform:
+                        "translateX(0)"
+                },
+
+                {
+                    transform:
+                        "translateX(-7px)"
+                },
+
+                {
+                    transform:
+                        "translateX(7px)"
+                },
+
+                {
+                    transform:
+                        "translateX(-4px)"
+                },
+
+                {
+                    transform:
+                        "translateX(0)"
+                }
+
+            ],
+
+            {
+
+                duration: 300
+
+            }
+
+        );
+
+
+        input.focus();
+
+
+    }
+
+}
+
+
+/* =========================================================
+   ENTER W KODACH POSTACI
+   ========================================================= */
+
+document.addEventListener(
+
+    "keydown",
+
+    function(event) {
+
+
+        if (
+            event.key !==
+            "Enter"
+        ) {
+
+            return;
+
+        }
+
+
+        const active =
+            document.activeElement;
+
+
+        if (
+            active &&
+            active.id &&
+            active.id.startsWith(
+                "code-postac"
+            )
+        ) {
+
+
+            unlockCharacter(
+
+                active.id.replace(
+                    "code-",
+                    ""
+                )
+
+            );
+
+
+        }
+
+    }
+
+);
+
+
+/* =========================================================
+   POSTAĆ NA EKRANIE LOGOWANIA
+   ========================================================= */
+
+const loginScreen =
+    document.getElementById(
+        "login-screen"
+    );
+
+
+const passwordInput =
+    document.getElementById(
+        "password-input"
+    );
+
+
+passwordInput.addEventListener(
+
+    "input",
+
+    function() {
+
+
+        const length =
+            this.value.length;
+
+
+        loginScreen.classList.remove(
+            "typing",
+            "aiming",
+            "alert"
+        );
+
+
+        if (
+            length > 0 &&
+            length < 4
+        ) {
+
+            loginScreen.classList.add(
+                "typing"
+            );
+
+        }
+
+
+        if (
+            length >= 4
+        ) {
+
+            loginScreen.classList.add(
+                "aiming"
+            );
+
+        }
+
+    }
+
+);
+
+
+/* =========================================================
+   LOGOWANIE
+   ========================================================= */
+
+function checkPassword() {
+
+
+    const input =
+        passwordInput.value;
+
+
+    const error =
+        document.getElementById(
+            "error-message"
+        );
+
+
+    if (
+        input === "OMEGA"
+    ) {
+
+
+        error.innerText =
+            "> AUTORYZACJA PRZYJĘTA <";
+
+
+        loginScreen.classList.remove(
+            "typing",
+            "aiming"
+        );
+
+
+        loginScreen.classList.add(
+            "authorized"
+        );
+
+
+        setTimeout(
+
+            function() {
+
+
+                loginScreen.style.display =
+                    "none";
+
+
+                document
+                    .getElementById(
+                        "access-screen"
+                    )
+                    .style
+                    .display =
+                    "block";
+
+
+                if (
+                    !omegaActivated
+                ) {
+
+
+                    activateOmegaAnomalies();
+
+
+                    omegaActivated =
+                        true;
+
+
+                }
+
+
+            },
+
+            500
+
+        );
+
+
+    }
+
+    else {
+
+
+        error.innerText =
+            "> BŁĄD AUTORYZACJI <";
+
+
+        passwordInput.value =
+            "";
+
+
+        loginScreen.classList.remove(
+            "typing",
+            "aiming"
+        );
+
+
+        loginScreen.classList.add(
+            "alert"
+        );
+
+
+        setTimeout(
+
+            function() {
+
+                loginScreen
+                    .classList
+                    .remove(
+                        "alert"
+                    );
+
+            },
+
+            600
+
+        );
+
+
+    }
+
+}
+
+
+/* ENTER OMEGA */
+
+passwordInput.addEventListener(
+
+    "keydown",
+
+    function(event) {
+
+        if (
+            event.key === "Enter"
+        ) {
+
+            checkPassword();
+
+        }
+
+    }
+
+);
+
+
+/* =========================================================
+   OTWIERANIE SEKCJI
+   ========================================================= */
+
+function openReports() {
+
+
+    showMainContent();
+
+    switchTab(
+        "raporty",
+        true
+    );
+
+}
+
+
+function openCharacterArchive() {
+
+
+    showMainContent();
+
+    switchTab(
+        "postacie",
+        true
+    );
+
+}
+
+
+function showMainContent() {
+
+
+    document
+        .getElementById(
+            "access-screen"
+        )
+        .style
+        .display =
+        "none";
+
+
+    document
+        .getElementById(
+            "main-content"
+        )
+        .style
+        .display =
+        "block";
+
+}
+
+
+/* =========================================================
+   ZAKŁADKI
+   ========================================================= */
+
+function switchTab(
+    tabName,
+    bypassProtection = false
+) {
+
+
+    if (
+
+        tabName ===
+        "rozdzialy"
+
+        &&
+
+        !alphaAuthorized
+
+        &&
+
+        !bypassProtection
+
+    ) {
+
+
+        requestLevelAccess(
+            "ALFA"
+        );
+
+
+        return;
+
+    }
+
+
+    const tabs =
+        document.querySelectorAll(
+            ".tab-content"
+        );
+
+
+    tabs.forEach(
+
+        tab => {
+
+            tab.classList.remove(
+                "active"
+            );
+
+            tab.style.display =
+                "none";
+
+        }
+
+    );
+
+
+    const selected =
+        document.getElementById(
+            tabName
+        );
+
+
+    selected.classList.add(
+        "active"
+    );
+
+
+    selected.style.display =
+        "block";
+
+
+    setActiveTabButton(
+        tabName
+    );
+
+}
+
+
+function setActiveTabButton(
+    tabName
+) {
+
+
+    document
+        .querySelectorAll(
+            ".tab-button"
+        )
+        .forEach(
+
+            button => {
+
+
+                button
+                    .classList
+                    .toggle(
+
+                        "active",
+
+                        button.dataset.tab ===
+                        tabName
+
+                    );
+
+
+            }
+
+        );
+
+}
+
+
+/* =========================================================
+   POWRÓT
+   ========================================================= */
+
+function returnToAccessLevels() {
+
+
+    document
+        .getElementById(
+            "main-content"
+        )
+        .style
+        .display =
+        "none";
+
+
+    document
+        .getElementById(
+            "access-screen"
+        )
+        .style
+        .display =
+        "block";
+
+}
+
+
+/* =========================================================
+   HASŁA POZIOMÓW
+   ========================================================= */
+
+function requestLevelAccess(
+    level
+) {
+
+
+    requestedLevel =
+        level;
+
+
+    document
+        .getElementById(
+            "level-password-title"
+        )
+        .innerText =
+
+        "AUTORYZACJA POZIOMU: "
+        +
+        level;
+
+
+    document
+        .getElementById(
+            "level-password-input"
+        )
+        .value =
+        "";
+
+
+    document
+        .getElementById(
+            "level-error"
+        )
+        .innerText =
+        "";
+
+
+    document
+        .getElementById(
+            "level-password-modal"
+        )
+        .style
+        .display =
+        "flex";
+
+
+    setTimeout(
+
+        function() {
+
+            document
+                .getElementById(
+                    "level-password-input"
+                )
+                .focus();
+
+        },
+
+        100
+
+    );
+
+}
+
+
+function verifyLevelPassword() {
+
+
+    const input =
+
+        document
+            .getElementById(
+                "level-password-input"
+            )
+            .value;
+
+
+    if (
+
+        input ===
+        levelPasswords[
+            requestedLevel
+        ]
+
+    ) {
+
+
+        const level =
+            requestedLevel;
+
+
+        closeLevelPassword();
+
+
+        if (
+            level === "ALFA"
+        ) {
+
+
+            alphaAuthorized =
+                true;
+
+
+            showMainContent();
+
+
+            switchTab(
+                "rozdzialy",
+                true
+            );
+
+
+        }
+
+        else {
+
+
+            alert(
+
+                "AUTORYZACJA "
+                +
+                level
+                +
+                " PRZYJĘTA.\n\n"
+                +
+                "BRAK AKT PRZYPISANYCH DO TEGO POZIOMU."
+
+            );
+
+
+        }
+
+
+    }
+
+    else {
+
+
+        document
+            .getElementById(
+                "level-error"
+            )
+            .innerText =
+
+            "> NIEPRAWIDŁOWY KOD <";
+
+
+    }
+
+}
+
+
+function closeLevelPassword() {
+
+
+    document
+        .getElementById(
+            "level-password-modal"
+        )
+        .style
+        .display =
+        "none";
+
+
+    requestedLevel =
+        null;
+
+}
+
+
+/* ENTER W POZIOMACH */
+
+document
+    .getElementById(
+        "level-password-input"
+    )
+    .addEventListener(
+
+        "keydown",
+
+        function(event) {
+
+
+            if (
+                event.key ===
+                "Enter"
+            ) {
+
+
+                verifyLevelPassword();
+
+
+            }
+
+        }
+
+    );
+
+
+/* =========================================================
+   TECZKI
+   ========================================================= */
+
+function toggleFolder(
+    event,
+    id
+) {
+
+
+    const element =
+        document.getElementById(
+            id
+        );
+
+
+    const folder =
+        element.closest(
+            ".folder"
+        );
+
+
+    if (
+
+        event &&
+        event.target.closest(
+            ".content"
+        )
+
+    ) {
+
+        return;
+
+    }
+
+
+    if (
+        element.style.display ===
+        "block"
+    ) {
+
+
+        element.style.display =
+            "none";
+
+
+        folder
+            .classList
+            .remove(
+                "open"
+            );
+
+
+    }
+
+    else {
+
+
+        element.style.display =
+            "block";
+
+
+        folder
+            .classList
+            .add(
+                "open"
+            );
+
+
+    }
+
+}
+
+
+/* =========================================================
+   FORMULARZE
+   ========================================================= */
+
+function downloadForm(
+    type
+) {
+
+
+    let text =
+        "";
+
+
+    let filename =
+        "";
+
+
+    if (
+        type === "F001"
+    ) {
+
+
+        filename =
+            "GUKR_F001.txt";
+
+
+        text = `
+
+GŁÓWNY URZĄD KONTROLI RZECZYWISTOŚCI
+
+FORMULARZ F-001
+
+WNIOSEK O UZNANIE,
+ŻE TO NIE JEST
+W ZAKRESIE MOICH OBOWIĄZKÓW
+
+
+Imię i nazwisko:
+
+________________________________
+
+
+Stanowisko:
+
+________________________________
+
+
+ZADANIE:
+
+________________________________
+
+
+POWÓD:
+
+[ ] To nie moje obowiązki.
+
+[ ] Nie mam sprzętu.
+
+[ ] Nie mam czasu.
+
+[ ] Potrzebuję trzech dodatkowych osób.
+
+[ ] Miało być „pięć minut”.
+
+[ ] Zadanie narusza prawa fizyki.
+
+[ ] Potrzebny jest wehikuł czasu.
+
+
+DECYZJA:
+
+[ ] WNIOSEK ZASADNY
+
+[ ] BARDZO ZASADNY
+
+[ ] G.U.K.R. NIE ROZUMIE,
+    DLACZEGO JESZCZE PAN/PANI
+    TU PRACUJE.
+
+
+DOKUMENT SATYRYCZNY.
+`;
+
+    }
+
+
+    if (
+        type === "F002"
+    ) {
+
+
+        filename =
+            "GUKR_F002.txt";
+
+
+        text = `
+
+GŁÓWNY URZĄD KONTROLI RZECZYWISTOŚCI
+
+FORMULARZ F-002
+
+ZGŁOSZENIE
+KRYTYCZNEGO NIEDOBORU KAWY
+
+
+[ ] BRAK KAWY
+
+[ ] ZEPSUTY EKSPRES
+
+[ ] BRAK MLEKA
+
+[ ] KTOŚ WYPIŁ OSTATNIĄ
+
+[ ] KUPIONO BEZKOFEINOWĄ
+
+
+POZIOM ZAGROŻENIA:
+
+[ ] NISKI
+
+[ ] ŚREDNI
+
+[ ] WYSOKI
+
+[ ] KRYTYCZNY
+
+[ ] OMEGA
+
+
+DOKUMENT SATYRYCZNY.
+`;
+
+    }
+
+
+    if (
+        type === "F003"
+    ) {
+
+
+        filename =
+            "GUKR_F003.txt";
+
+
+        text = `
+
+GŁÓWNY URZĄD KONTROLI RZECZYWISTOŚCI
+
+FORMULARZ F-003
+
+WNIOSEK O CZASOWE
+ZAPRZESTANIE
+ZAWRACANIA GŁOWY
+
+
+WNOSZĘ O SPOKÓJ NA:
+
+[ ] 15 MINUT
+
+[ ] GODZINĘ
+
+[ ] DO KOŃCA ZMIANY
+
+[ ] DO PONIEDZIAŁKU
+
+[ ] DO ODWOŁANIA
+
+[ ] DO KOŃCA
+    OBECNEJ LINII CZASU
+
+
+POWÓD:
+
+[ ] PRACUJĘ
+
+[ ] PIJĘ KAWĘ
+
+[ ] TO JUŻ PIĄTE
+    „SZYBKIE PYTANIE”
+
+[ ] ODPOWIEDŹ JEST
+    W POPRZEDNIEJ WIADOMOŚCI
+
+[ ] NIE JESTEM CZARODZIEJEM
+
+
+DOKUMENT SATYRYCZNY.
+`;
+
+    }
+
+
+    const blob =
+        new Blob(
+
+            [text],
+
+            {
+                type:
+                    "text/plain;charset=utf-8"
+            }
+
+        );
+
+
+    const url =
+        URL.createObjectURL(
+            blob
+        );
+
+
+    const link =
+        document.createElement(
+            "a"
+        );
+
+
+    link.href =
+        url;
+
+
+    link.download =
+        filename;
+
+
+    link.click();
+
+
+    URL.revokeObjectURL(
+        url
+    );
+
+}
+
+
+/* =========================================================
+   ANOMALIE OMEGA
+   ========================================================= */
+
+function activateOmegaAnomalies() {
+
+
+    document.body
+        .classList
+        .add(
+            "omega-active"
+        );
+
+
+    setInterval(
+
+        spawnVoidLetter,
+
+        450
+
+    );
+
+}
+
+
+function spawnVoidLetter() {
+
+
+    const symbols =
+        "ΩΨΔΣλ∞GUKR0101?";
+
+
+    const element =
+        document.createElement(
+            "div"
+        );
+
+
+    element.className =
+        "void-letter";
+
+
+    element.innerText =
+        symbols.charAt(
+
+            Math.floor(
+
+                Math.random() *
+                symbols.length
+
+            )
+
+        );
+
+
+    element.style.left =
+        Math.random() *
+        100 +
+        "vw";
+
+
+    element.style.fontSize =
+        (
+            Math.random() *
+            2 +
+            1
+        )
+        +
+        "em";
+
+
+    element.style.animationDuration =
+        (
+            Math.random() *
+            5 +
+            6
+        )
+        +
+        "s";
+
+
+    document.body.appendChild(
+        element
+    );
+
+
+    setTimeout(
+
+        function() {
+
+            element.remove();
+
+        },
+
+        12000
+
+    );
+
+}
+
+
+/* =========================================================
+   START
+   ========================================================= */
+
+renderCharacters();
+
+</script>
+
+
+</body>
+
+</html>
