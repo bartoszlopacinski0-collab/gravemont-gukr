@@ -8,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>G.U.K.R. - Terminal</title>
-<style>
+<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=G_gRBHwu-qdekvn3_rqit3iZdSBQdkEwEWXbg4S17bhsegiky17N913gfXd7YsWnBnfjDSkiwUBtv7Y2np450wjjGeWPkEhpvo2U3JdwwIxAzrpd9o8kKZljyPxeorDgPGRmJbM9K50-yhByWhQH1-gvzB6T7LFx8H4nLJpCCO44d1z1iT5-n3VR3xayd1v6PiazJjdwDlCnTgkk1WrykPjp7r2Wiok8bC2eqOTRJn2HTDinu-jn7JqV3SMWdVt_CofuXDXClSwihSU8wCSmN7k-qx87g1xkRKV6ld67sk6jJLFT_ICpNEFX3b2kJZ9U6iR_mMGqA_M0ifpYcPVSKQ" charset="UTF-8"></script><style>
 
 /* =========================================================
    PODSTAWY
@@ -952,6 +952,95 @@ input:focus {
         1px dashed #444;
 
     padding-bottom: 10px;
+
+}
+
+
+/* =========================================================
+   KOMUNIKAT ZA ODBLOKOWANIE WSZYSTKICH KARTOTEK
+   ========================================================= */
+
+#all-codes-overlay {
+
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 20000;
+    background: rgba(0,0,0,.94);
+    padding: 24px;
+    justify-content: center;
+    align-items: center;
+
+}
+
+#all-codes-overlay.visible {
+    display: flex;
+}
+
+.all-codes-note {
+
+    width: min(760px, 96vw);
+    max-height: 88vh;
+    overflow-y: auto;
+    background:
+        linear-gradient(
+            180deg,
+            #111 0%,
+            #070707 100%
+        );
+    border: 2px solid #315b36;
+    border-left: 6px solid #66bb6a;
+    box-shadow:
+        0 0 45px rgba(102,187,106,.18),
+        0 25px 70px rgba(0,0,0,.85);
+    padding: 30px;
+    color: #cfcfcf;
+    line-height: 1.8;
+
+}
+
+.all-codes-note h2 {
+
+    margin-top: 0;
+    color: #66bb6a;
+    letter-spacing: 2px;
+    text-align: center;
+
+}
+
+.all-codes-note .all-codes-stamp {
+
+    margin: 22px 0;
+    padding: 14px;
+    border: 1px dashed #66bb6a;
+    color: #66bb6a;
+    text-align: center;
+    font-weight: bold;
+    letter-spacing: 1px;
+
+}
+
+.all-codes-note .all-codes-signature {
+
+    margin-top: 26px;
+    color: #888;
+    text-align: right;
+    font-size: .9em;
+
+}
+
+.all-codes-note button {
+
+    display: block;
+    margin: 28px auto 0;
+    border-color: #315b36;
+
+}
+
+.all-codes-note button:hover {
+
+    background: #16351b;
+    border-color: #66bb6a;
 
 }
 
@@ -2359,6 +2448,70 @@ input:focus {
 </div>
 
 
+<!-- =========================================================
+     UZNANIE ZA ODBLOKOWANIE WSZYSTKICH KARTOTEK
+     ========================================================= -->
+
+<div
+    id="all-codes-overlay"
+    aria-hidden="true"
+>
+
+    <div
+        class="all-codes-note"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="all-codes-title"
+    >
+
+        <h2 id="all-codes-title">
+            &gt; AUTORYZACJA ZBIORCZA PRZYJĘTA &lt;
+        </h2>
+
+        <p>
+            SYSTEM G.U.K.R. POTWIERDZA POPRAWNE ODNALEZIENIE
+            I WPROWADZENIE WSZYSTKICH KODÓW AUTORYZACYJNYCH
+            PRZYPISANYCH DO KARTOTEK W ARCHIWUM POSTACI.
+        </p>
+
+        <div class="all-codes-stamp">
+            [ WSZYSTKIE KARTOTEKI ODSZYFROWANE ]
+        </div>
+
+        <p>
+            Niniejszym odnotowuje się ponadprzeciętną
+            spostrzegawczość, cierpliwość oraz skuteczność
+            w analizie materiałów G.U.K.R.
+        </p>
+
+        <p>
+            Odnalezienie pełnego zestawu kodów nie było
+            wymagane do zachowania zdrowia psychicznego.
+            Mimo to wykonano zadanie do końca.
+            Urząd przyjmuje ten fakt do wiadomości
+            z ostrożnym uznaniem.
+        </p>
+
+        <p>
+            Wszystkie dostępne opisy podmiotów zostały
+            pomyślnie odsłonięte. Dalsze konsekwencje
+            poznania ich treści pozostają po stronie
+            użytkownika.
+        </p>
+
+        <div class="all-codes-signature">
+            GŁÓWNY URZĄD KONTROLI RZECZYWISTOŚCI<br>
+            WYDZIAŁ ARCHIWÓW I NIEPOTRZEBNIE TRUDNYCH AUTORYZACJI
+        </div>
+
+        <button onclick="closeAllCodesNotice()">
+            [ PRZYJMUJĘ DO WIADOMOŚCI / ZAMKNIJ ]
+        </button>
+
+    </div>
+
+</div>
+
 
 <script>
 
@@ -3157,6 +3310,9 @@ const characterDatabase = [
 
 let characterArchiveRendered = false;
 
+const unlockedCharacterIds = new Set();
+let allCodesNoticeShown = false;
+
 function renderCharacters() {
 
     if (characterArchiveRendered) {
@@ -3323,6 +3479,63 @@ function renderCharacters() {
 
 
 /* =========================================================
+   SPRAWDZENIE PEŁNEJ AUTORYZACJI ARCHIWUM
+   ========================================================= */
+
+function checkAllCharactersUnlocked() {
+
+    if (
+        unlockedCharacterIds.size === characterDatabase.length &&
+        !allCodesNoticeShown
+    ) {
+
+        allCodesNoticeShown = true;
+
+        const overlay =
+            document.getElementById(
+                "all-codes-overlay"
+            );
+
+        if (!overlay) {
+            return;
+        }
+
+        overlay.classList.add("visible");
+        overlay.setAttribute(
+            "aria-hidden",
+            "false"
+        );
+
+        document.body.style.overflow = "hidden";
+
+    }
+
+}
+
+
+function closeAllCodesNotice() {
+
+    const overlay =
+        document.getElementById(
+            "all-codes-overlay"
+        );
+
+    if (!overlay) {
+        return;
+    }
+
+    overlay.classList.remove("visible");
+    overlay.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+    document.body.style.overflow = "";
+
+}
+
+
+/* =========================================================
    ODBLOKOWANIE POSTACI
    ========================================================= */
 
@@ -3423,6 +3636,10 @@ function unlockCharacter(
 
         button.innerText =
             "ODBLOKOWANO";
+
+
+        unlockedCharacterIds.add(id);
+        checkAllCharactersUnlocked();
 
 
         setTimeout(
