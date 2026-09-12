@@ -8,8 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>G.U.K.R. - Terminal</title>
-
-<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=MkAVrunkLCe6n2v1DwTmlBZsSfdLsPjpr62Wz46udrYArIrj5AKYhVYlWy6Q_4SUCJEj3nnQdQYg95FkLgQh3MSbDjWXKtxwLwNpS3kisra6CcQZ4z8ZUoaNNQ6sI1QqAfDftbfyJvxPadQxGhRkXsqoaPqajEOl3-LqiIwf8GoFEWkLWzBj8Lgpf45fpWsfo3VgA9ey4zWk_kFvR6gFNQuKvt9dbIV3tMqL1PvAldlL81h4UQ4AVhara3Rg1jKboAOxcNToSxQj3yr0eNqmtYv9B-5NgKUCPY1Y_sfHqCA8Qy0slXgFuMNA-cju0oXlThNpXcPPDQSvUuGvV8bknejF4YsKXFfG7hgUvG_LOJ8" charset="UTF-8"></script><style>
+<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=ioKeuEWVvX-oz_mz3i7PMrwfEoAVS5_fGWZLmGdDLYxMWoE-JN9298b4iwsEqCkhGvI4dWEbct0aXajPILAKxXrDFsrLKsMy_EpSEUKLOCuAhGSxYJaOjQ0ysabrX_szfLxuowovgkpoBrOTPnlkZ1nqBovuXV7hsKRxlGDLMhomjNgAEecIiLEho94ehD6gxLNGCY0l_tw5dRvocQOC7KVBlVUQ-k9ruftg7nfFuRIWWEoE0nLuEsUjTEnUUlPFQTxQy8JAJ23R3mxh74s_5QvhjUa2GNJKBurzyhjOEN3JtRSjO4fhGoRpmnU4WVSmZCleqrh8pm0Md6-BMtxdrw" charset="UTF-8"></script><style>
 
 /* =========================================================
    PODSTAWY
@@ -748,53 +747,6 @@ input:focus {
 
 
 /* =========================================================
-   FORMULARZE
-   ========================================================= */
-
-.forms-grid {
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(
-            auto-fit,
-            minmax(280px,1fr)
-        );
-
-    gap: 20px;
-
-}
-
-.form-card {
-
-    background: #101010;
-
-    border:
-        1px solid #333;
-
-    border-left:
-        4px solid #555;
-
-    padding: 22px;
-
-}
-
-.form-card:hover {
-
-    border-left-color: #8b0000;
-
-}
-
-.form-number {
-
-    color: #8b0000;
-
-    font-weight: bold;
-
-}
-
-
-/* =========================================================
    ARCHIWUM POSTACI
    ========================================================= */
 
@@ -1149,8 +1101,10 @@ input:focus {
 
         <img
             id="login-character"
-            src="gukr-obserwator.jpeg"
+            src="gukr-obserwator.png"
             alt=""
+            decoding="async"
+            fetchpriority="high"
         >
 
     </div>
@@ -1560,15 +1514,6 @@ input:focus {
             onclick="switchTab('rozdzialy')"
         >
             [ PEŁNE AKTA ]
-        </button>
-
-
-        <button
-            class="tab-button"
-            data-tab="formularze"
-            onclick="switchTab('formularze')"
-        >
-            [ FORMULARZE ]
         </button>
 
 
@@ -2351,102 +2296,6 @@ input:focus {
         </div>
 
     </main>
-
-
-
-    <!-- =====================================================
-         FORMULARZE
-         ===================================================== -->
-
-    <main
-        id="formularze"
-        class="tab-content"
-    >
-
-        <p class="intro">
-
-            &gt;
-            FORMULARZE UŻYTKU CODZIENNEGO.
-
-            <br>
-
-            &gt;
-            DOKUMENTY SATYRYCZNE.
-
-        </p>
-
-
-        <div class="forms-grid">
-
-
-            <div class="form-card">
-
-                <div class="form-number">
-                    G.U.K.R. / F-001
-                </div>
-
-                <h3>
-                    WNIOSEK O UZNANIE,
-                    ŻE TO NIE JEST
-                    W ZAKRESIE
-                    MOICH OBOWIĄZKÓW
-                </h3>
-
-                <button
-                    onclick="downloadForm('F001')"
-                >
-                    POBIERZ
-                </button>
-
-            </div>
-
-
-            <div class="form-card">
-
-                <div class="form-number">
-                    G.U.K.R. / F-002
-                </div>
-
-                <h3>
-                    ZGŁOSZENIE
-                    KRYTYCZNEGO
-                    NIEDOBORU KAWY
-                </h3>
-
-                <button
-                    onclick="downloadForm('F002')"
-                >
-                    POBIERZ
-                </button>
-
-            </div>
-
-
-            <div class="form-card">
-
-                <div class="form-number">
-                    G.U.K.R. / F-003
-                </div>
-
-                <h3>
-                    WNIOSEK O CZASOWE
-                    ZAPRZESTANIE
-                    ZAWRACANIA GŁOWY
-                </h3>
-
-                <button
-                    onclick="downloadForm('F003')"
-                >
-                    POBIERZ
-                </button>
-
-            </div>
-
-
-        </div>
-
-    </main>
-
 
 
     <!-- =====================================================
@@ -3234,7 +3083,15 @@ const characterDatabase = [
    RENDEROWANIE ARCHIWUM
    ========================================================= */
 
+let characterArchiveRendered = false;
+
 function renderCharacters() {
+
+    if (characterArchiveRendered) {
+        return;
+    }
+
+    characterArchiveRendered = true;
 
     const grid =
         document.getElementById(
@@ -3278,6 +3135,8 @@ function renderCharacters() {
                         class="character-image"
                         src="${character.image}"
                         alt="${character.title}"
+                        loading="lazy"
+                        decoding="async"
                     >
 
                     <div class="character-number">
@@ -3903,6 +3762,11 @@ function switchTab(
 ) {
 
 
+    if (tabName === "postacie") {
+        renderCharacters();
+    }
+
+
     if (
 
         tabName ===
@@ -4310,241 +4174,6 @@ function toggleFolder(
 
 
 /* =========================================================
-   FORMULARZE
-   ========================================================= */
-
-function downloadForm(
-    type
-) {
-
-
-    let text =
-        "";
-
-
-    let filename =
-        "";
-
-
-    if (
-        type === "F001"
-    ) {
-
-
-        filename =
-            "GUKR_F001.txt";
-
-
-        text = `
-
-GŁÓWNY URZĄD KONTROLI RZECZYWISTOŚCI
-
-FORMULARZ F-001
-
-WNIOSEK O UZNANIE,
-ŻE TO NIE JEST
-W ZAKRESIE MOICH OBOWIĄZKÓW
-
-
-Imię i nazwisko:
-
-________________________________
-
-
-Stanowisko:
-
-________________________________
-
-
-ZADANIE:
-
-________________________________
-
-
-POWÓD:
-
-[ ] To nie moje obowiązki.
-
-[ ] Nie mam sprzętu.
-
-[ ] Nie mam czasu.
-
-[ ] Potrzebuję trzech dodatkowych osób.
-
-[ ] Miało być „pięć minut”.
-
-[ ] Zadanie narusza prawa fizyki.
-
-[ ] Potrzebny jest wehikuł czasu.
-
-
-DECYZJA:
-
-[ ] WNIOSEK ZASADNY
-
-[ ] BARDZO ZASADNY
-
-[ ] G.U.K.R. NIE ROZUMIE,
-    DLACZEGO JESZCZE PAN/PANI
-    TU PRACUJE.
-
-
-DOKUMENT SATYRYCZNY.
-`;
-
-    }
-
-
-    if (
-        type === "F002"
-    ) {
-
-
-        filename =
-            "GUKR_F002.txt";
-
-
-        text = `
-
-GŁÓWNY URZĄD KONTROLI RZECZYWISTOŚCI
-
-FORMULARZ F-002
-
-ZGŁOSZENIE
-KRYTYCZNEGO NIEDOBORU KAWY
-
-
-[ ] BRAK KAWY
-
-[ ] ZEPSUTY EKSPRES
-
-[ ] BRAK MLEKA
-
-[ ] KTOŚ WYPIŁ OSTATNIĄ
-
-[ ] KUPIONO BEZKOFEINOWĄ
-
-
-POZIOM ZAGROŻENIA:
-
-[ ] NISKI
-
-[ ] ŚREDNI
-
-[ ] WYSOKI
-
-[ ] KRYTYCZNY
-
-[ ] OMEGA
-
-
-DOKUMENT SATYRYCZNY.
-`;
-
-    }
-
-
-    if (
-        type === "F003"
-    ) {
-
-
-        filename =
-            "GUKR_F003.txt";
-
-
-        text = `
-
-GŁÓWNY URZĄD KONTROLI RZECZYWISTOŚCI
-
-FORMULARZ F-003
-
-WNIOSEK O CZASOWE
-ZAPRZESTANIE
-ZAWRACANIA GŁOWY
-
-
-WNOSZĘ O SPOKÓJ NA:
-
-[ ] 15 MINUT
-
-[ ] GODZINĘ
-
-[ ] DO KOŃCA ZMIANY
-
-[ ] DO PONIEDZIAŁKU
-
-[ ] DO ODWOŁANIA
-
-[ ] DO KOŃCA
-    OBECNEJ LINII CZASU
-
-
-POWÓD:
-
-[ ] PRACUJĘ
-
-[ ] PIJĘ KAWĘ
-
-[ ] TO JUŻ PIĄTE
-    „SZYBKIE PYTANIE”
-
-[ ] ODPOWIEDŹ JEST
-    W POPRZEDNIEJ WIADOMOŚCI
-
-[ ] NIE JESTEM CZARODZIEJEM
-
-
-DOKUMENT SATYRYCZNY.
-`;
-
-    }
-
-
-    const blob =
-        new Blob(
-
-            [text],
-
-            {
-                type:
-                    "text/plain;charset=utf-8"
-            }
-
-        );
-
-
-    const url =
-        URL.createObjectURL(
-            blob
-        );
-
-
-    const link =
-        document.createElement(
-            "a"
-        );
-
-
-    link.href =
-        url;
-
-
-    link.download =
-        filename;
-
-
-    link.click();
-
-
-    URL.revokeObjectURL(
-        url
-    );
-
-}
-
-
-/* =========================================================
    ANOMALIE OMEGA
    ========================================================= */
 
@@ -4649,7 +4278,7 @@ function spawnVoidLetter() {
    START
    ========================================================= */
 
-renderCharacters();
+// Archiwum postaci jest renderowane dopiero po jego otwarciu.
 
 </script>
 
