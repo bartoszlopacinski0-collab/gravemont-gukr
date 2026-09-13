@@ -8,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>G.U.K.R. - Terminal</title>
-<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=G_gRBHwu-qdekvn3_rqit3iZdSBQdkEwEWXbg4S17bhsegiky17N913gfXd7YsWnBnfjDSkiwUBtv7Y2np450wjjGeWPkEhpvo2U3JdwwIxAzrpd9o8kKZljyPxeorDgPGRmJbM9K50-yhByWhQH1-gvzB6T7LFx8H4nLJpCCO44d1z1iT5-n3VR3xayd1v6PiazJjdwDlCnTgkk1WrykPjp7r2Wiok8bC2eqOTRJn2HTDinu-jn7JqV3SMWdVt_CofuXDXClSwihSU8wCSmN7k-qx87g1xkRKV6ld67sk6jJLFT_ICpNEFX3b2kJZ9U6iR_mMGqA_M0ifpYcPVSKQ" charset="UTF-8"></script><style>
+<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=KnO-Tjbn2ODi04v9UBUx8rmQkkB3bHLTJXBXMWQmfiw5Cwkpgez6u_kjXiL0FYPF4OXvtpjFd1UdyTYDkvzAXgoyX-ZLxW0DllRrohDrOQAlbo7gUEucSzKqmGUCYAzP_jSRSiWKY7mvglbpw1dhJeUJ_CHXYu1T70dPcqBiUI8A5Y28Yu5hgI7mAQGixmwDhKfTviAGbMhOI839ofRnPoFv868e6Fy_CN9_BxrqH0_hE9NiHKj0Inb3rHreKvxt05nv7FE0EJuIWARLDQX9f9H-7Er43aItBiZhzrKY0P7_Fqjh5XQuVXKt3sN0BwPS0ulESIVNZ3r7sXiJUMK7jg" charset="UTF-8"></script><style>
 
 /* =========================================================
    PODSTAWY
@@ -1097,6 +1097,262 @@ input:focus {
 }
 
 
+
+
+/* =========================================================
+   WERYFIKACJA BIOMETRYCZNA / TERMINAL RETRO
+   ========================================================= */
+
+#identity-verification-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 30000;
+    background: #000;
+    color: #00ff66;
+    font-family: "Courier New", Courier, monospace;
+    align-items: center;
+    justify-content: center;
+    padding: 22px;
+    overflow: auto;
+}
+
+#identity-verification-overlay.active {
+    display: flex;
+}
+
+.verify-terminal {
+    width: min(920px, 96vw);
+    min-height: 610px;
+    border: 2px solid #00aa44;
+    background: #001006;
+    box-shadow:
+        0 0 25px rgba(0,255,102,.20),
+        inset 0 0 55px rgba(0,255,102,.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.verify-terminal::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+        to bottom,
+        rgba(0,0,0,0) 0px,
+        rgba(0,0,0,0) 3px,
+        rgba(0,0,0,.18) 4px
+    );
+    z-index: 6;
+}
+
+.verify-terminal::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    top: -4px;
+    background: rgba(0,255,102,.55);
+    box-shadow: 0 0 14px #00ff66;
+    animation: terminalScanLine 2.3s linear infinite;
+    z-index: 7;
+    pointer-events: none;
+}
+
+@keyframes terminalScanLine {
+    from { top: 0; }
+    to { top: 100%; }
+}
+
+.verify-topbar {
+    border-bottom: 1px solid #008833;
+    padding: 11px 16px;
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    flex-wrap: wrap;
+    font-size: .8em;
+    letter-spacing: 1px;
+    background: #001a0a;
+}
+
+.verify-content {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 22px;
+    padding: 24px;
+    position: relative;
+    z-index: 2;
+}
+
+.biometric-panel {
+    border: 1px solid #008833;
+    min-height: 440px;
+    padding: 16px;
+    position: relative;
+    background: rgba(0,25,10,.72);
+}
+
+.biometric-label {
+    text-align: center;
+    font-size: .75em;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+}
+
+.face-scan {
+    height: 290px;
+    border: 1px dashed #00aa44;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.face-ascii {
+    white-space: pre;
+    font-size: 12px;
+    line-height: 1.15;
+    color: #00cc55;
+    opacity: .8;
+    text-shadow: 0 0 7px rgba(0,255,102,.55);
+}
+
+.face-scan-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 3px;
+    top: 0;
+    background: #00ff66;
+    box-shadow: 0 0 14px #00ff66;
+    animation: faceScanMove 1.7s ease-in-out infinite alternate;
+}
+
+@keyframes faceScanMove {
+    from { top: 8%; }
+    to { top: 90%; }
+}
+
+.eye-readout {
+    margin-top: 14px;
+    border-top: 1px dashed #00772f;
+    padding-top: 12px;
+    font-size: .75em;
+    line-height: 1.65;
+}
+
+.verify-log-wrap {
+    min-height: 440px;
+    display: flex;
+    flex-direction: column;
+}
+
+.verify-title {
+    font-size: 1.15em;
+    letter-spacing: 3px;
+    margin-bottom: 15px;
+    color: #6dff9f;
+    text-shadow: 0 0 8px rgba(0,255,102,.45);
+}
+
+#verification-log {
+    flex: 1;
+    border: 1px solid #006f2b;
+    background: #000b04;
+    padding: 16px;
+    min-height: 330px;
+    max-height: 390px;
+    overflow-y: auto;
+    line-height: 1.7;
+    font-size: .9em;
+}
+
+.verify-log-line {
+    margin-bottom: 5px;
+}
+
+.verify-log-line.ok {
+    color: #9dffbc;
+}
+
+.verify-log-line.strong {
+    color: #d2ffe0;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.verify-progress-shell {
+    margin-top: 16px;
+    border: 1px solid #008833;
+    height: 22px;
+    padding: 3px;
+}
+
+#verification-progress {
+    height: 100%;
+    width: 0%;
+    background: repeating-linear-gradient(
+        90deg,
+        #00a843 0 12px,
+        #003b17 12px 15px
+    );
+    transition: width .35s linear;
+}
+
+#verification-status {
+    margin-top: 10px;
+    min-height: 24px;
+    font-size: .8em;
+    letter-spacing: 1px;
+}
+
+.verify-cursor::after {
+    content: "_";
+    animation: cursorBlink .7s steps(1) infinite;
+}
+
+@keyframes cursorBlink {
+    50% { opacity: 0; }
+}
+
+#login-screen .biometric-start-button {
+    margin-top: 22px;
+    border-color: #006d2b;
+    color: #8dffb2;
+    background: #001407;
+    letter-spacing: 2px;
+    box-shadow: 0 0 12px rgba(0,255,102,.08);
+}
+
+#login-screen .biometric-start-button:hover {
+    background: #003314;
+    border-color: #00bb4b;
+    color: #c6ffd8;
+}
+
+@media(max-width:760px) {
+    .verify-content {
+        grid-template-columns: 1fr;
+    }
+
+    .biometric-panel {
+        min-height: auto;
+    }
+
+    .face-scan {
+        height: 220px;
+    }
+
+    .verify-terminal {
+        min-height: 0;
+    }
+}
+
+
 /* =========================================================
    TELEFON
    ========================================================= */
@@ -1215,26 +1471,89 @@ input:focus {
     </p>
 
 
-    <input
-        id="password-input"
-        type="password"
-        placeholder="WPROWADŹ KOD"
-        autocomplete="off"
+    <button
+        class="biometric-start-button"
+        onclick="startUserVerification('ACCESS')"
     >
-
-
-    <button onclick="checkPassword()">
-
-        WERYFIKUJ
-
+        [ ROZPOCZNIJ WERYFIKACJĘ UŻYTKOWNIKA ]
     </button>
 
 
-    <div id="error-message"></div>
+    <div id="error-message">
+        &gt; SYSTEM GOTOWY DO IDENTYFIKACJI &lt;
+    </div>
 
 
 </div>
 
+
+<!-- =========================================================
+     WERYFIKACJA BIOMETRYCZNA
+     ========================================================= -->
+
+<div id="identity-verification-overlay" aria-live="polite">
+
+    <div class="verify-terminal">
+
+        <div class="verify-topbar">
+            <span>G.U.K.R. // SYSTEM IDENTYFIKACJI OSOBOWEJ</span>
+            <span>TERMINAL: GH-AUTH/01</span>
+        </div>
+
+        <div class="verify-content">
+
+            <div class="biometric-panel">
+
+                <div class="biometric-label">
+                    [ MODUŁ BIOMETRYCZNY ]
+                </div>
+
+                <div class="face-scan">
+                    <div class="face-scan-line"></div>
+                    <div class="face-ascii">       .--------.
+     .'          '.
+    /   .------.   \
+   /   /        \   \
+  |   |   o  o   |   |
+  |   |    __    |   |
+  |   |  .____.  |   |
+   \   \        /   /
+    \   '------'   /
+     '.          .'
+       '--------'</div>
+                </div>
+
+                <div class="eye-readout" id="eye-readout">
+                    SENSOR TWARZY: OCZEKIWANIE<br>
+                    SENSOR OCZU: OCZEKIWANIE<br>
+                    SYGNATURA UŻYTKOWNIKA: ---
+                </div>
+
+            </div>
+
+            <div class="verify-log-wrap">
+
+                <div class="verify-title">
+                    &gt; WERYFIKACJA UŻYTKOWNIKA
+                </div>
+
+                <div id="verification-log" class="verify-cursor"></div>
+
+                <div class="verify-progress-shell">
+                    <div id="verification-progress"></div>
+                </div>
+
+                <div id="verification-status">
+                    OCZEKIWANIE NA URUCHOMIENIE PROCEDURY...
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
 
 <!-- =========================================================
@@ -2576,9 +2895,7 @@ const levelPasswords = {
 
     CHI: "204",
 
-    PSI: "909",
-
-    OMEGA: "000"
+    PSI: "909"
 
 };
 
@@ -3793,199 +4110,243 @@ const loginScreen =
     );
 
 
-const passwordInput =
+const verificationOverlay =
     document.getElementById(
-        "password-input"
+        "identity-verification-overlay"
     );
 
-
-passwordInput.addEventListener(
-
-    "input",
-
-    function() {
-
-
-        const length =
-            this.value.length;
-
-
-        loginScreen.classList.remove(
-            "typing",
-            "aiming",
-            "alert"
-        );
-
-
-        if (
-            length > 0 &&
-            length < 4
-        ) {
-
-            loginScreen.classList.add(
-                "typing"
-            );
-
-        }
-
-
-        if (
-            length >= 4
-        ) {
-
-            loginScreen.classList.add(
-                "aiming"
-            );
-
-        }
-
-    }
-
-);
+let verificationInProgress = false;
 
 
 /* =========================================================
-   LOGOWANIE
+   WERYFIKACJA UŻYTKOWNIKA — BEZ HASŁA OMEGA
    ========================================================= */
 
-function checkPassword() {
+function startUserVerification(destination = "ACCESS") {
 
-
-    const input =
-        passwordInput.value;
-
-
-    const error =
-        document.getElementById(
-            "error-message"
-        );
-
-
-    if (
-        input === "OMEGA"
-    ) {
-
-
-        error.innerText =
-            "> AUTORYZACJA PRZYJĘTA <";
-
-
-        loginScreen.classList.remove(
-            "typing",
-            "aiming"
-        );
-
-
-        loginScreen.classList.add(
-            "authorized"
-        );
-
-
-        setTimeout(
-
-            function() {
-
-
-                loginScreen.style.display =
-                    "none";
-
-
-                document
-                    .getElementById(
-                        "access-screen"
-                    )
-                    .style
-                    .display =
-                    "block";
-
-
-                if (
-                    !omegaActivated
-                ) {
-
-
-                    activateOmegaAnomalies();
-
-
-                    omegaActivated =
-                        true;
-
-
-                }
-
-
-            },
-
-            500
-
-        );
-
-
+    if (verificationInProgress) {
+        return;
     }
 
-    else {
+    verificationInProgress = true;
 
-
-        error.innerText =
-            "> BŁĄD AUTORYZACJI <";
-
-
-        passwordInput.value =
-            "";
-
-
-        loginScreen.classList.remove(
-            "typing",
-            "aiming"
+    const log =
+        document.getElementById(
+            "verification-log"
         );
 
-
-        loginScreen.classList.add(
-            "alert"
+    const progress =
+        document.getElementById(
+            "verification-progress"
         );
 
+    const status =
+        document.getElementById(
+            "verification-status"
+        );
 
-        setTimeout(
+    const eyeReadout =
+        document.getElementById(
+            "eye-readout"
+        );
 
-            function() {
+    log.innerHTML = "";
+    progress.style.width = "0%";
+    status.innerText =
+        "PROSZĘ CZEKAĆ...";
 
-                loginScreen
-                    .classList
-                    .remove(
-                        "alert"
+    eyeReadout.innerHTML =
+        "SENSOR TWARZY: INICJALIZACJA<br>" +
+        "SENSOR OCZU: INICJALIZACJA<br>" +
+        "SYGNATURA UŻYTKOWNIKA: ANALIZA";
+
+    loginScreen.classList.remove(
+        "typing",
+        "alert"
+    );
+
+    loginScreen.classList.add(
+        "aiming"
+    );
+
+    verificationOverlay.classList.add(
+        "active"
+    );
+
+    const steps = [
+        {
+            text: "> PROSZĘ CZEKAĆ. URUCHAMIANIE MODUŁU IDENTYFIKACJI...",
+            progress: 8,
+            delay: 650
+        },
+        {
+            text: "> WERYFIKACJA UŻYTKOWNIKA...",
+            progress: 18,
+            delay: 700
+        },
+        {
+            text: "> SKAN TWARZY: ROZPOCZĘTO.",
+            progress: 32,
+            delay: 850,
+            eyes: "SENSOR TWARZY: SKANOWANIE<br>SENSOR OCZU: OCZEKIWANIE<br>SYGNATURA UŻYTKOWNIKA: ANALIZA"
+        },
+        {
+            text: "> SKAN TWARZY: ZGODNOŚĆ POTWIERDZONA [98.7%]",
+            progress: 46,
+            delay: 750,
+            ok: true,
+            eyes: "SENSOR TWARZY: POTWIERDZONO 98.7%<br>SENSOR OCZU: SKANOWANIE<br>SYGNATURA UŻYTKOWNIKA: ANALIZA"
+        },
+        {
+            text: "> SKAN OCZU / SIATKÓWKI: ZGODNOŚĆ POTWIERDZONA.",
+            progress: 61,
+            delay: 800,
+            ok: true,
+            eyes: "SENSOR TWARZY: POTWIERDZONO<br>SENSOR OCZU: POTWIERDZONO<br>SYGNATURA UŻYTKOWNIKA: ZGODNA"
+        },
+        {
+            text: "> WERYFIKACJA STOPNIA DOSTĘPU...",
+            progress: 73,
+            delay: 850
+        },
+        {
+            text: "> STOPIEŃ DOSTĘPU: POTWIERDZONY / UPRAWNIENIA AKTYWNE.",
+            progress: 84,
+            delay: 750,
+            ok: true
+        },
+        {
+            text: "> SPRAWDZANIE REJESTRU G.U.K.R.... BRAK BLOKAD.",
+            progress: 93,
+            delay: 800,
+            ok: true
+        },
+        {
+            text: "> ZGODA NA WEJŚCIE: PRZYZNANA.",
+            progress: 100,
+            delay: 900,
+            ok: true,
+            strong: true
+        }
+    ];
+
+    let index = 0;
+
+    function runStep() {
+
+        if (index >= steps.length) {
+
+            status.innerText =
+                destination === "OMEGA"
+                    ? "AUTORYZACJA PRZYJĘTA. OTWIERANIE BAZY DANYCH..."
+                    : "AUTORYZACJA PRZYJĘTA. OTWIERANIE CENTRUM DOSTĘPU...";
+
+            setTimeout(
+                function() {
+
+                    verificationOverlay
+                        .classList
+                        .remove("active");
+
+                    loginScreen.style.display =
+                        "none";
+
+                    loginScreen.classList.remove(
+                        "aiming"
                     );
 
-            },
+                    loginScreen.classList.add(
+                        "authorized"
+                    );
 
-            600
+                    if (destination === "OMEGA") {
 
-        );
+                        document
+                            .getElementById(
+                                "access-screen"
+                            )
+                            .style
+                            .display =
+                            "none";
 
+                        showMainContent();
 
-    }
+                        switchTab(
+                            "raporty",
+                            true
+                        );
 
-}
+                        if (!omegaActivated) {
+                            activateOmegaAnomalies();
+                            omegaActivated = true;
+                        }
 
+                    } else {
 
-/* ENTER OMEGA */
+                        document
+                            .getElementById(
+                                "main-content"
+                            )
+                            .style
+                            .display =
+                            "none";
 
-passwordInput.addEventListener(
+                        document
+                            .getElementById(
+                                "access-screen"
+                            )
+                            .style
+                            .display =
+                            "block";
+                    }
 
-    "keydown",
+                    verificationInProgress = false;
 
-    function(event) {
+                },
+                950
+            );
 
-        if (
-            event.key === "Enter"
-        ) {
-
-            checkPassword();
-
+            return;
         }
 
+        const step = steps[index];
+
+        const line =
+            document.createElement("div");
+
+        line.className =
+            "verify-log-line" +
+            (step.ok ? " ok" : "") +
+            (step.strong ? " strong" : "");
+
+        line.innerText =
+            step.text;
+
+        log.appendChild(line);
+        log.scrollTop = log.scrollHeight;
+
+        progress.style.width =
+            step.progress + "%";
+
+        status.innerText =
+            "POSTĘP WERYFIKACJI: " +
+            step.progress + "%";
+
+        if (step.eyes) {
+            eyeReadout.innerHTML =
+                step.eyes;
+        }
+
+        index++;
+
+        setTimeout(
+            runStep,
+            step.delay
+        );
     }
 
-);
+    runStep();
+}
 
 
 /* =========================================================
@@ -4193,6 +4554,14 @@ function returnToAccessLevels() {
 function requestLevelAccess(
     level
 ) {
+
+
+    if (
+        level === "OMEGA"
+    ) {
+        startUserVerification("OMEGA");
+        return;
+    }
 
 
     requestedLevel =
