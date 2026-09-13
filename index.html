@@ -8,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>G.U.K.R. - Terminal</title>
-<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=KnO-Tjbn2ODi04v9UBUx8rmQkkB3bHLTJXBXMWQmfiw5Cwkpgez6u_kjXiL0FYPF4OXvtpjFd1UdyTYDkvzAXgoyX-ZLxW0DllRrohDrOQAlbo7gUEucSzKqmGUCYAzP_jSRSiWKY7mvglbpw1dhJeUJ_CHXYu1T70dPcqBiUI8A5Y28Yu5hgI7mAQGixmwDhKfTviAGbMhOI839ofRnPoFv868e6Fy_CN9_BxrqH0_hE9NiHKj0Inb3rHreKvxt05nv7FE0EJuIWARLDQX9f9H-7Er43aItBiZhzrKY0P7_Fqjh5XQuVXKt3sN0BwPS0ulESIVNZ3r7sXiJUMK7jg" charset="UTF-8"></script><style>
+<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=cTiichLNPGr3g_W1RhIQb6mUUMfQbhTTABuXiGTcS14OYrxQXszn7NyKNTfzdAvvJIWZ8oJpd0FP9xki6JR_0bNs9as7CNBR040KST7i4l01UQrVUWDnh4k7QZ5R_aqzboV4XprJRrjB7aKNjrmcLvzEygA8Kyx4gF5o3vje-22BgDav9kgFg0E3L4764cDrI7TDMpvcP63m1ljnkVxv9eXGWmWM8imY6mhZS4KiSKfLk3iwB5wWYF1YVc96boMbWqz5126cr59fg1eJ0j4iDjYHDSzYW8VV-ljzJ-5JIFd5vWmgcSsd0Th70tvvarWj_8LfW1ejTw1l4rVhNCHyJA" charset="UTF-8"></script><style>
 
 /* =========================================================
    PODSTAWY
@@ -1427,12 +1427,115 @@ input:focus {
     color: #e3e3e3;
 }
 
+
+
+/* =========================================================
+   TŁO: LATAJĄCE ZNAKI / CYFRY / ANOMALIE
+   ========================================================= */
+
+#ambient-code-field {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+    contain: layout paint;
+}
+
+.ambient-glyph {
+    position: absolute;
+    bottom: -14vh;
+    left: 0;
+    white-space: nowrap;
+    user-select: none;
+    font-family: "Courier New", Courier, monospace;
+    font-weight: bold;
+    letter-spacing: .08em;
+    opacity: 0;
+    will-change: transform, opacity;
+    text-shadow: 0 0 8px currentColor;
+    animation-name: ambientGlyphFlight;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+}
+
+.ambient-glyph.green { color: rgba(0,255,102,.22); }
+.ambient-glyph.red   { color: rgba(180,20,20,.20); }
+.ambient-glyph.gray  { color: rgba(190,190,190,.13); }
+.ambient-glyph.dim   { filter: blur(.35px); opacity: .55; }
+
+@keyframes ambientGlyphFlight {
+    0% {
+        transform: translate3d(0, 0, 0) rotate(var(--rot-start, 0deg));
+        opacity: 0;
+    }
+
+    10% { opacity: var(--peak-opacity, .7); }
+
+    55% {
+        transform:
+            translate3d(var(--drift-mid, 18px), -60vh, 0)
+            rotate(var(--rot-mid, 90deg));
+        opacity: var(--peak-opacity, .7);
+    }
+
+    100% {
+        transform:
+            translate3d(var(--drift-end, -12px), -128vh, 0)
+            rotate(var(--rot-end, 180deg));
+        opacity: 0;
+    }
+}
+
+/* Interfejs jest nad tłem, ale zachowuje przezroczystość tam, gdzie ją ma. */
+#access-screen,
+#main-content {
+    position: relative;
+    z-index: 2;
+}
+
+#login-screen {
+    z-index: 2;
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(19,0,0,.94) 0%,
+            rgba(5,5,5,.90) 40%,
+            rgba(0,0,0,.84) 100%
+        );
+}
+
+/* Delikatne linie skanowania starego terminala. */
+#ambient-code-field::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            rgba(255,255,255,.018) 0,
+            rgba(255,255,255,.018) 1px,
+            transparent 1px,
+            transparent 5px
+        );
+    opacity: .45;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ambient-glyph {
+        animation-duration: 1ms !important;
+        display: none;
+    }
+}
+
 </style>
 
 </head>
 
 
 <body>
+
+<div id="ambient-code-field" aria-hidden="true"></div>
 
 
 <!-- =========================================================
@@ -1968,11 +2071,11 @@ input:focus {
             <h2 class="folder-title">
 
                 <span>
-                    [+] RAPORT GH-04
+                    [+] RAPORT GH-01 / UDRAŻNIANIE METAFIZYCZNE
                 </span>
 
                 <span>
-                    [ŚCIŚLE TAJNE]
+                    [WEWNĘTRZNE / ZARCHIWIZOWANE]
                 </span>
 
             </h2>
@@ -1983,64 +2086,156 @@ input:focus {
                 class="content"
             >
 
-                <strong>
-                    INCYDENT W RECEPCJI
-                </strong>
+                <div style="border-left:4px solid #8b0000; padding:16px 18px; margin-bottom:28px; background:#0b0b0b; line-height:1.8;">
+                    <strong style="color:#b22222;">[ KARTA KLASYFIKACYJNA G.U.K.R. ]</strong><br><br>
+                    <strong>SYGNATURA:</strong> GH-01 / HYD-META<br>
+                    <strong>TYP:</strong> RAPORT SZKOLENIOWO-INCYDENTOWY<br>
+                    <strong>PODMIOT:</strong> MICHAŁ<br>
+                    <strong>OBIEKT:</strong> „EZECHIEL 4000”<br>
+                    <strong>ZDARZENIE:</strong> CERTYFIKACJA / ANOMALIA HYDRAULICZNO-EGZORCYSTYCZNA<br>
+                    <strong>STATUS:</strong> ZARCHIWIZOWANY
+                </div>
 
-                <p>
-                    — Gdzie podział się pokój 404?
+                <div class="chapter-title-full">
+                    ROZDZIAŁ I: CERTYFIKAT Z UDRAŻNIANIA METAFIZYCZNEGO I ANEKS DO UMOWY O PRZEŻYCIE
+                </div>
+
+                <div class="full-chapter-text">
+                <p class="chapter-paragraph">
+                    Droga do gabinetu Kierownika nigdy nie była prosta. Nie chodziło nawet o to, że korytarze w Hotelu Gravemont zmieniały układ w zależności od ciśnienia atmosferycznego i nastroju personelu sprzątającego. Chodziło o samą grawitację biurokracji. Im bliżej drzwi z tabliczką „DYREKCJA – ZAKAZ WSTĘPU (CHYBA ŻE MASZ PĄCZKI)”, tym powietrze stawało się gęstsze. Pachniało starym tonerem, lękiem przed urzędem skarbowym i kawą, która stała na podgrzewaczu od 1998 roku.
                 </p>
-
-                <p>
-                    — Nie zniknął.
-                    Przeniósł się do zeszłego czwartku.
+                <p class="chapter-paragraph">
+                    Michał poprawił kołnierzyk swojego taniego uniformu, który drapał go w szyję, jakby był uszyty z wełny stalowej i pretensji. Był tu nowy. Jego staż pracy liczono w dniach, choć jego psychika sugerowała, że minęły już dekady. Stał przed dębowymi drzwiami. Z wewnątrz dobiegał dźwięk niszczarki, która brzmiała, jakby przeżuwała małe ssaki.
                 </p>
-
-                <p>
-                    — Znowu?
+                <p class="chapter-paragraph">
+                    Zapukał. Dźwięk był głuchy, jakby uderzył w wieko trumny.
                 </p>
-
-            </div>
-
-        </div>
-
-
-        <div
-            class="folder"
-            onclick="toggleFolder(event,'raport2')"
-        >
-
-            <h2 class="folder-title">
-
-                <span>
-                    [+] RAPORT BIZARRO-9
-                </span>
-
-                <span>
-                    [OCENZUROWANO]
-                </span>
-
-            </h2>
-
-
-            <div
-                id="raport2"
-                class="content"
-            >
-
-                <p>
-                    — Proszę podać nazwisko.
+                <p class="chapter-paragraph">
+                    – Wejść! Ale bez gwałtownych ruchów, bo fikus jest dzisiaj nerwowy! – dobiegł stłumiony krzyk zza drzwi.
                 </p>
-
-                <p>
-                    — Nie mam nazwiska.
-                    Jestem czystym prawdopodobieństwem.
+                <p class="chapter-paragraph">
+                    Michał nacisnął klamkę. Była lepka. Wszedł do środka. Gabinet Kierownika był architektonicznym dowcipem. Sufit ginął w ciemnościach, z których zwisały łańcuchy zakończone segregatorami. Ściany wyłożone były boazerią, która pulsowała cicho w rytm bijącego serca. Za biurkiem wielkości lotniskowca siedział On. Kierownik. Człowiek, który prawdopodobnie urodził się w garniturze i z pieczątką w ręku.
                 </p>
-
-                <p>
-                    — Rozumiem.
-                    Wpisuję: bezrobotny.
+                <p class="chapter-paragraph">
+                    – Nazwisko? – zapytał Kierownik, nie podnosząc wzroku znad dokumentu, który dymił lekko na brzegach. – Michał. Nowy. Z serwisu sprzątającego – odpowiedział chłopak, czując, jak dywan próbuje dyskretnie rozwiązać mu sznurowadło. – A, tak. Mięso... to znaczy, Kapitał Ludzki. Usiądź. Nie na tym krześle, to krzesło jest na zwolnieniu lekarskim. Usiądź na wiadrze.
                 </p>
+                <p class="chapter-paragraph">
+                    Michał rozejrzał się i przysiadł niepewnie na odwróconym wiadrze po farbie olejnej.
+                </p>
+                <p class="chapter-paragraph">
+                    – Wiesz, dlaczego cię wezwałem, synu? – Kierownik odłożył pióro, które wyglądało jak zaostrzona kość udowa kurczaka. Złączył palce w piramidkę. – Bo spóźniłem się wczoraj trzy minuty? – Nie bądź małostkowy. Czas w tym hotelu jest pojęciem względnym. Trzy minuty tutaj to trzy lata w ZUS-ie. Nie. Wezwałem cię, ponieważ twoje kompetencje są... niewystarczające. – Ale ja tylko myję podłogi... – "Tylko"? – Kierownik parsknął śmiechem, który brzmiał jak wysypywanie żwiru na blachę. – W Gravemont podłoga to granica między rzeczywistością a piwnicą, w której trzymamy rzeczy, o których filozofom się nie śniło. Ale mniejsza z tym. Awansujesz. – Awansuję? – w głosie Michała pojawiła się nuta nadziei, szybko stłumiona przez instynkt samozachowawczy. – Poziomo. Rozszerzamy ci zakres obowiązków. Podpisz tutaj. I tutaj. I tu, gdzie jest ta mała czaszka.
+                </p>
+                <p class="chapter-paragraph">
+                    Kierownik przesunął po blacie gruby plik papierów. Nagłówek głosił: ANEKS NR 66/B DO UMOWY O DZIEŁO (I NIEDOLĘ). DOTYCZY: OBSŁUGI URZĄDZEŃ HYDRAULICZNO-EGZORCYSTYCZNYCH.
+                </p>
+                <p class="chapter-paragraph">
+                    – Co to jest? – zapytał Michał, mrużąc oczy przy drobnym druku, który zdawał się uciekać przed jego wzrokiem. – To jest twoja przepustka do wielkiego świata rur, kolanek i ludzkich grzechów. Hotel ma problem. Kanalizacja na trzecim piętrze. Goście... – Kierownik skrzywił się z niesmakiem. – ...goście przywożą ze sobą nie tylko brudną bieliznę, ale i bagaż emocjonalny. I spuszczają go w toalecie. Rozumiesz? – Nie bardzo. – Spłukują smutki, lęki, niespełnione marzenia i resztki szamponu z hotelu w Łebie. To wszystko się odkłada. Tworzy zatory. Fizyka tego nie ruszy. Chemia tego nie ruszy. Potrzeba... perswazji manualnej.
+                </p>
+                <p class="chapter-paragraph">
+                    Kierownik schylił się pod biurko. Słychać było szczęk metalu i ciche warknięcie. Po chwili wyciągnął na blat przedmiot. To była przepychaczka. Ale nie taka zwykła, z marketu budowlanego. Ta miała trzonek z ciemnego, sękatego drewna, owinięty czymś, co wyglądało jak skóra węża, a sama gumowa czasza była czerwona jak zachód słońca nad atomowym poligonem. Pulsowała własnym światłem.
+                </p>
+                <p class="chapter-paragraph">
+                    – Oto "Ezechiel 4000". Model z turbodoładowaniem zwrotnym i funkcją zasysania ektoplazmy – powiedział Kierownik z dumą, gładząc trzonek. – To teraz twoja najlepsza przyjaciółka. I jedyna ochrona przed tym, co siedzi w rurach.
+                </p>
+                <p class="chapter-paragraph">
+                    Michał patrzył na gumowy dzwon z przerażeniem.
+                </p>
+                <p class="chapter-paragraph">
+                    – Mam tym... przetykać kible? – Nie "przetykać". Ty masz negocjować przepływ. Masz przywracać harmonię w cyklu wodno-kanalizacyjnym. Ale najpierw\... szkolenie.
+                </p>
+                <p class="chapter-paragraph">
+                    Kierownik wstał gwałtownie. Fikus w rogu sali zaszurał doniczką, cofając się pod ścianę. – Wstań. Bierz Ezechiela. Idziemy na poligon.
+                </p>
+                <div style="border-top:1px dashed #555; margin:28px 0;"></div>
+                <p class="chapter-paragraph">
+                    Poligonem okazała się mała łazienka dla personelu na zapleczu, która wyglądała, jakby nie była remontowana od czasów Powstania Styczniowego. Płytki były popękane i układały się w niepokojące wzory geometryczne, od których bolały zęby. Na środku stał sedes. Nie był to zwykły sedes. Był to Tron Ceramiki. Masywny, żeliwny, z krawędzią wyszczerbioną w kształt uśmiechu rekina. Z wnętrza muszli wydobywał się cichy, złowrogi pomruk, przypominający buczenie transformatora wysokiego napięcia.
+                </p>
+                <p class="chapter-paragraph">
+                    – To jest "Bestia" – wyjaśnił Kierownik, opierając się o umywalkę, która natychmiast zaczęła kapać ze strachu. – Służy do celów szkoleniowych. W tej chwili jest zatkana. – Czym? – zapytał Michał, trzymając Ezechiela 4000 na wyciągniętych rękach, jakby to była odbezpieczona mina. – Zgłoszenie serwisowe mówi o... – Kierownik zerknął na kartkę – ...o "nadmiarze egzystencjalnego bólu po rozwodzie lokatora z pokoju 202" oraz "połowie kurczaka z rożna". Mieszanka wybuchowa. Tłuszcz wiąże żal w twardą skorupę.
+                </p>
+                <p class="chapter-paragraph">
+                    Michał przełknął ślinę.
+                </p>
+                <p class="chapter-paragraph">
+                    – I co mam zrobić? – Podejdź. Spójrz w otchłań. Ale nie za długo, bo otchłań rzuci ci wezwanie do zapłaty.
+                </p>
+                <p class="chapter-paragraph">
+                    Michał podszedł do sedesu. Woda w środku była czarna i gęsta. Wirowała powoli, przeciwnie do ruchu wskazówek zegara. Czuł od niej chłód.
+                </p>
+                <p class="chapter-paragraph">
+                    – Technika jest kluczowa – instruował Kierownik, gestykulując w powietrzu. – Ludzie myślą, że chodzi o siłę. Bzdura. Chodzi o rytm. O rezonans. Musisz zsynchronizować ruchy nadgarstka z częstotliwością drgań rury. – Jak mam to wyczuć? – Sercem, chłopcze! Sercem i błędnikiem! Przyłóż kielich. Szczelnie. Musi przyssać się jak urzędnik do premii.
+                </p>
+                <p class="chapter-paragraph">
+                    Michał opuścił czerwoną gumę do wody. <em>Mlask</em>. Dźwięk był ohydny, mokry i ostateczny. Ezechiel 4000 przyssał się do odpływu z siłą, która niemal wyrwała Michałowi ramię ze stawu.
+                </p>
+                <p class="chapter-paragraph">
+                    – Dobrze! – krzyknął Kierownik, a jego oczy błyszczały fanatycznym blaskiem. – Teraz! Pierwszy ruch: kompresja! Wtłaczaj tam swoje autorytety! Pokaż rurze, kto tu rządzi!
+                </p>
+                <p class="chapter-paragraph">
+                    Michał pchnął. Drzewiec stawił opór, jakby pchał w beton. W rurach coś jęknęło. To był dźwięk podobny do płaczu dziecka zamkniętego w studni.
+                </p>
+                <p class="chapter-paragraph">
+                    – Słyszysz? To opór materii! – ekscytował się Kierownik. – Teraz dekompresja! Ciągnij! Wyciągnij z niej to, co ukrywa! Wyciągnij ten smutek!
+                </p>
+                <p class="chapter-paragraph">
+                    Michał pociągnął. Guma zassała się jeszcze mocniej. Czuł, że nie walczy z fizycznym zatorem. Walczył z czymś lepkim, co chwyciło drugą stronę przepychaczki.
+                </p>
+                <p class="chapter-paragraph">
+                    – Nie idzie! – wydyszał, zapierając się nogami o śliskie kafelki. – Coś trzyma od dołu! – To kurczak! Albo żal po podziale majątku! Nie puszczaj! Jeśli puścisz teraz, nastąpi cofka emocjonalna! Zaleje nas depresja w aerozolu! Pompuj, do cholery! Pompuj, jakby od tego zależał twój ZUS!
+                </p>
+                <p class="chapter-paragraph">
+                    Michał zamknął oczy. Zaczął pompować. <em>Szur... Mlask... Szur... Mlask...</em> Rytm był hipnotyczny. Z każdym pchnięciem czuł, jak wibracje przechodzą przez drewniany trzonek prosto do jego kręgosłupa. Widział przed oczami dziwne obrazy: płaczącego mężczyznę jedzącego udko, prawnika podpisującego papiery rozwodowe, kapiący tłuszcz, zgaszone świece.
+                </p>
+                <p class="chapter-paragraph">
+                    – Głębiej! – wrzeszczał Kierownik, skacząc wokół jak szaman w garniturze. – Użyj nadgarstka! Rotacja sferyczna! Złam kręgosłup temu zatorowi!
+                </p>
+                <p class="chapter-paragraph">
+                    Michał ryknął. To nie był krzyk bojowy wojownika. To był pisk przerażonego pracownika na umowie śmieciowej, który chce po prostu wrócić do domu. Szarpnął z całej siły. Drewno Ezechiela rozgrzało się. Czerwona guma zaczęła świecić.
+                </p>
+                <p class="chapter-paragraph">
+                    <em>BULG!</em>
+                </p>
+                <p class="chapter-paragraph">
+                    Z toalety wydobył się dźwięk, jakby wieloryb beknął pod wodą. Czarna woda zawirowała gwałtownie, tworząc lej, który wciągał wszystko: światło, dźwięk, nadzieję. I nagle – cisza. Woda spłynęła. Została tylko czysta, biała ceramika. Na dnie leżała mała, plastikowa kaczuszka i metalowa obrączka.
+                </p>
+                <p class="chapter-paragraph">
+                    Michał stał, dysząc ciężko, oparty o przepychaczkę jak o kostur pątnika. Pot spływał mu po plecach.
+                </p>
+                <p class="chapter-paragraph">
+                    – Brawo – powiedział Kierownik cicho, z autentycznym podziwem (co zdarzało się rzadziej niż zaćmienie słońca). – Słyszałeś to? To był dźwięk kapitulacji zatoru. Piękne. Poetyckie. – Czy... czy ja właśnie odetkałem czyjeś małżeństwo? – zapytał Michał słabo, patrząc na obrączkę. – Nie. Tylko rurę. Małżeństwo jest stracone. Ale przynajmniej woda spływa. Priorytety, panie Michał. Priorytety.
+                </p>
+                <p class="chapter-paragraph">
+                    Kierownik podszedł, podniósł obrączkę pęsetą i wrzucił ją do kieszeni.
+                </p>
+                <p class="chapter-paragraph">
+                    – To pójdzie do Biura Rzeczy Znalezionych i Przeklętych. A tobie... gratuluję. Zdałeś.
+                </p>
+                <p class="chapter-paragraph">
+                    Wyciągnął z kieszeni marynarki mały, złoty znaczek w kształcie przepychaczki i wpiął go Michałowi w klapę uniformu.
+                </p>
+                <p class="chapter-paragraph">
+                    – Certyfikat ISO-666 w zakresie udrażniania kanałów rzeczywistości. Jesteś teraz Starszym Specjalistą ds. Przepływu. – Czy to wiąże się z podwyżką? – zapytał Michał, odzyskując na chwilę trzeźwość umysłu. – Oczywiście, że nie. Wiąże się z większą odpowiedzialnością i kluczem do szafki ze środkami żrącymi. A teraz wracaj do pracy. Słyszałem, że na drugim piętrze wanna próbuje pożreć pokojówkę. Weź Ezechiela. Będzie potrzebny.
+                </p>
+                <p class="chapter-paragraph">
+                    Kierownik wskazał drzwi. Michał, wciąż oszołomiony, chwycił "Ezechiela 4000", który teraz wydawał się lżejszy, jakby uznał go za swojego pana, i wyszedł na korytarz.
+                </p>
+                <div style="border-top:1px dashed #555; margin:28px 0;"></div>
+                <p class="chapter-paragraph">
+                    Na korytarzu spotkał Staśka. Stasiek, rezydent hotelowy o nieokreślonej funkcji i stałym poziomie promili we krwi, opierał się o ścianę, próbując otworzyć butelkę piwa o framugę windy.
+                </p>
+                <p class="chapter-paragraph">
+                    – O, młody – mruknął Stasiek, mrużąc jedno oko, bo drugie najwyraźniej obserwowało inną rzeczywistość. – Coś ty taki blady? Wyglądasz, jakbyś widział Pit w rocznym rozliczeniu. – Byłem u Kierownika – szepnął Michał, ściskając trzonek przepychaczki. – Dostałem to. I certyfikat. – Uuu... – Stasiek gwizdnął z uznaniem, patrząc na czerwony gumowy dzwon. – Ezechiel. Legendarny sprzęt. Poprzedni gość, co go używał, wciągnął się sam do środka, jak próbował odetkać odpływ w basenie. Znaleźli go po tygodniu w oczyszczalni ścieków, mówił po aramejsku. – Pocieszasz mnie. – Nie, ostrzegam. To nie jest zabawka. To berło władzy nad nieczystościami. Ale wiesz co? – Stasiek w końcu otworzył piwo. Kapsel poleciał w głąb korytarza i nigdy nie spadł na ziemię. – Przynajmniej masz czym się bronić. W tym hotelu gówno to najmniejszy problem. Gorzej jak to gówno zaczyna mieć plany na przyszłość.
+                </p>
+                <p class="chapter-paragraph">
+                    Michał spojrzał na swoją nową broń. Guma lśniła wilgotno. Czuł, że jego życie właśnie skręciło w bardzo dziwną, ciemną i wilgotną uliczkę.
+                </p>
+                <p class="chapter-paragraph">
+                    – Idę na drugie piętro – powiedział z rezygnacją. – Podobno wanna atakuje ludzi. – A, to pewnie Apartament Nowożeńców – kiwnął głową Stasiek, pociągając łyk. – Uważaj na kurki z ciepłą wodą. Kłamią. Zimna jest szczera, ale brutalna. Powodzenia, hydrauliku.
+                </p>
+                <p class="chapter-paragraph">
+                    Stasiek odepchnął się od ściany i poczłapał w stronę schodów, nucąc pod nosem melodię, która brzmiała jak hymny państwowe puszczane od tyłu. Michał został sam. Poprawił chwyt na Ezechielu. "Starszy Specjalista ds. Przepływu" – pomyślał. To brzmiało dumnie. A potem usłyszał krzyk z drugiego piętra i ruszył biegiem, modląc się, żeby instrukcja obsługi Ezechiela nie była napisana cyrylicą.
+                </p>
+                </div>
 
             </div>
 
@@ -4932,11 +5127,149 @@ function spawnVoidLetter() {
 }
 
 
+
+
+/* =========================================================
+   STAŁE TŁO ANOMALII — LITERY / CYFRY / SYMBOLE
+   ========================================================= */
+
+let ambientCodeTimer = null;
+
+function startAmbientCodeField() {
+
+    if (ambientCodeTimer) {
+        return;
+    }
+
+    const layer =
+        document.getElementById(
+            "ambient-code-field"
+        );
+
+    if (!layer) {
+        return;
+    }
+
+    const tokens = [
+        "0", "1", "7", "13", "404", "666", "Ω", "Ψ", "Δ", "Σ", "λ", "∞",
+        "?", "!", "#", "§", "⌘", "⌁", "⌬", "⟁", "⊗", "⊙", "∴", "∵",
+        "[G.U.K.R.]", "ERR", "NULL", "VOID", "GH-01", "ALFA", "OMEGA",
+        "0101", "110010", "0x13", "//", "::", "<>/", "[REDACTED]",
+        "RZECZYWISTOŚĆ?", "BRAK DANYCH", "NIE PATRZ", "..."
+    ];
+
+    const colors = [
+        "green",
+        "green",
+        "green",
+        "red",
+        "gray"
+    ];
+
+    function createAmbientGlyph() {
+
+        /* Limit elementów chroni stronę przed spowolnieniem. */
+        if (layer.childElementCount > 30) {
+            return;
+        }
+
+        const glyph =
+            document.createElement(
+                "span"
+            );
+
+        glyph.className =
+            "ambient-glyph " +
+            colors[
+                Math.floor(
+                    Math.random() * colors.length
+                )
+            ];
+
+        if (Math.random() < 0.28) {
+            glyph.classList.add("dim");
+        }
+
+        glyph.textContent =
+            tokens[
+                Math.floor(
+                    Math.random() * tokens.length
+                )
+            ];
+
+        const left =
+            Math.random() * 100;
+
+        const size =
+            0.65 + Math.random() * 1.75;
+
+        const duration =
+            13 + Math.random() * 16;
+
+        const delay =
+            Math.random() * 1.4;
+
+        const driftMid =
+            -55 + Math.random() * 110;
+
+        const driftEnd =
+            -85 + Math.random() * 170;
+
+        const rotStart =
+            -18 + Math.random() * 36;
+
+        const rotMid =
+            rotStart + (-35 + Math.random() * 70);
+
+        const rotEnd =
+            rotMid + (-70 + Math.random() * 140);
+
+        const peakOpacity =
+            0.22 + Math.random() * 0.48;
+
+        glyph.style.left = left + "vw";
+        glyph.style.fontSize = size + "rem";
+        glyph.style.animationDuration = duration + "s";
+        glyph.style.animationDelay = delay + "s";
+        glyph.style.setProperty("--drift-mid", driftMid + "px");
+        glyph.style.setProperty("--drift-end", driftEnd + "px");
+        glyph.style.setProperty("--rot-start", rotStart + "deg");
+        glyph.style.setProperty("--rot-mid", rotMid + "deg");
+        glyph.style.setProperty("--rot-end", rotEnd + "deg");
+        glyph.style.setProperty("--peak-opacity", peakOpacity);
+
+        layer.appendChild(glyph);
+
+        setTimeout(
+            function() {
+                glyph.remove();
+            },
+            (duration + delay + 1) * 1000
+        );
+    }
+
+    /* Kilka znaków od razu, żeby tło nie startowało puste. */
+    for (let i = 0; i < 12; i++) {
+        setTimeout(
+            createAmbientGlyph,
+            i * 140
+        );
+    }
+
+    ambientCodeTimer =
+        setInterval(
+            createAmbientGlyph,
+            780
+        );
+}
+
+
 /* =========================================================
    START
    ========================================================= */
 
 // Archiwum postaci jest renderowane dopiero po jego otwarciu.
+startAmbientCodeField();
 
 </script>
 
